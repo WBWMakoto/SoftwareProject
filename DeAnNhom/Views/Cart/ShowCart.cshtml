@@ -1,0 +1,173 @@
+﻿@using System.Globalization;
+
+@model DeAnNhom.Models.Cart
+
+@{
+    ViewBag.Title = "ShowCart";
+    Layout = "~/Views/Shared/Layout/_CartLayout.cshtml";
+
+    bool isEmpty = Model.Items.Count() == 0;
+
+    string FormatPrice(decimal price)
+    {
+        return price.ToString("C0", CultureInfo.CreateSpecificCulture("VN-vn"));
+    }
+
+    string formatID(int proID, string size)
+    {
+        return $"Quantity-{proID}-{size}";
+    }
+}
+
+<div class="max-w-screen-xl mx-auto flex flex-1 flex-col gap-5">
+    <section class="grid grid-cols-8 gap-4 bg-white shadow-lg py-3 px-10 text-center text-gray-400 h-[60px] [&_span]:flex [&_span]:items-center [&_span]:justify-center rounded-md" id="top">
+        <span class="col-span-3 text-black !justify-start"> Sản phẩm </span>
+        <span> Đơn giá</span>
+        <span class="col-span-2 flex justify-center"> Số lượng </span>
+        <span> Số tiền </span>
+        <span> Thao tác </span>
+    </section>
+
+    <section class="flex flex-col gap-y-5 bg-white shadow-lg py-3 px-10 @(isEmpty ? "flex-1" : "flex-none") rounded-md" id="showProduct">
+        @if (!isEmpty)
+        {
+            foreach (var item in Model.Items)
+            {
+                <div class="grid grid-cols-8 gap-4 col-span-2">
+                    <div class="col-span-3 flex justify-between">
+                        <a href="@Url.Action("Details", "Product", new { name = item._product.ProductID })">
+                            <div class="text-left flex items-start gap-3">
+                                <img src="@Url.Content(item._product.ProductImage)" class="w-[80px] h-[80px] rounded-md" />
+                                <div class="h-max overflow-hidden text-sm w-[200px]"
+                                     style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">
+                                    @item._product.ProductName
+                                </div>
+                            </div>
+                        </a>
+                        <div class="w-[100px] h-[34px] border rounded-md border-gray-300 px-2 py-1 text-center">
+                            @item._sizes
+                        </div>
+                    </div>
+                    <span class="flex items-center justify-center">
+                        @FormatPrice(item._product.Price)
+                    </span>
+                    @using (Html.BeginForm("UpdateItemQuantity", "Cart", FormMethod.Post, new
+                    {
+                        @class = "col-span-2 min-h-[50px] flex justify-between items-center",
+                        enctype = "multipart/form-data"
+                    }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input name="ProID" id="ProID" value="@item._product.ProductID" class="hidden" />
+                        <input name="Size" id="Size" value="@item._sizes" class="hidden" />
+
+                        <div class="border border-gray-300 flex items-center justify-center">
+                            <button onclick="decreaseQuantity(@item._product.Quantity, '@item._sizes')" type="button" class="text-center w-8 h-8 border-r-[1px] border-gray-300"> <i class="fa-solid fa-minus"></i> </button>
+                            <input class="w-[60px] h-8 focus:outline-none text-center inputQuantity" value="@item._quantity" id="@formatID(item._product.Quantity, item._sizes)" name="Quantity" data-maxQuan="@item._product.Quantity" />
+                            <button onclick="increaseQuantity(@item._product.Quantity, '@item._sizes')" type="button" class="text-center w-8 h-8 border-l-[1px] border-gray-300"> <i class="fa-solid fa-plus"></i> </button>
+                        </div>
+                        <button type="submit" class="bg-[#ee4d2d] text-center rounded-md px-3 py-1 text-white">
+                            Tính lại số tiền
+                        </button>
+                    }
+                    <span class="flex items-center justify-center text-[#ee4d2d]">
+                        @FormatPrice(item._quantity * item._product.Price)
+                    </span>
+                    <div class="flex items-center justify-center">
+                        <a href="@Url.Action("RemoveItem", "Cart", new { id = item._product.ProductID, size = item._sizes })" class="bg-[#ee4d2d] text-center rounded-md px-5 py-1 text-white">
+                            Xóa
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-span-8 flex-1 text-center flex flex-col items-center justify-center">
+                <img src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/cart/9bdd8040b334d31946f49e36beaf32db.png"
+                     class="h-[150px] w-[150px] " loading="lazy" />
+                <span> Giỏ hàng của bạn trống. <a href="@Url.Action("Index", "Product")" class="text-blue-600 block"> Mua hàng.</a> </span>
+            </div>
+        }
+    </section>
+
+    @if (Model.Items.Count() > 0)
+    {
+        <section class="bg-white shadow-lg h-[64px] py-3 px-10 flex justify-end items-center gap-5 rounded-md" id="showTotal">
+            <div class="flex items-center gap-3">
+                <span> Tổng thanh toán (@Model.Items.Count() Sản phẩm): </span>
+                <span class="text-[#ee4d2d] text-2xl font-semibold"> @FormatPrice(Model.TotalMoney()) </span>
+            </div>
+            <a class="bg-[#ee4d2d] text-center w-[200px] py-2 text-white rounded-md shadow-lg" href="@Url.Action("Checkout")">
+                Mua hàng
+            </a>
+        </section>
+    }
+</div>
+
+@section script
+{
+    <script>
+        const decreaseQuantity = (maxQuan, size) => {
+            const input = $(`#Quantity-${maxQuan}-${size}`)[0];
+            let currentQuan = (+input.value);
+
+            if (currentQuan - 1 > 0) {
+                input.setAttribute("value", currentQuan - 1);
+            }
+        }
+
+        const increaseQuantity = (maxQuan, size) => {
+            const input = $(`#Quantity-${maxQuan}-${size}`)[0];
+            let currentQuan = (+input.value);
+
+            if (currentQuan + 1 <= (+maxQuan)) {
+                input.setAttribute("value", currentQuan + 1);
+            }
+        }
+
+        const checkout = async () => await fetch("/Cart/Checkout", { method: "POST" });
+
+        (function ($) {
+            $.fn.inputFilter = function (callback) {
+                return this.on("input keydown keyup mousedown mouseup select contextmenu drop focusout", function (e) {
+                    if (callback(this.value)) {
+                        // Accepted value
+                        if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                            $(this).removeClass("input-error");
+                            this.setCustomValidity("");
+                        }
+                        this.oldValue = this.value;
+                        this.oldSelectionStart = this.selectionStart;
+                        this.oldSelectionEnd = this.selectionEnd;
+                    }
+                    else if (this.hasOwnProperty("oldValue")) {
+                        // Rejected value - restore the previous one
+                        $(this).addClass("input-error");
+                        this.reportValidity();
+                        this.value = this.oldValue;
+                        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                    }
+                    else {
+                        // Rejected value - nothing to restore
+                        this.value = "";
+                    }
+                });
+            };
+        }(jQuery));
+
+        $(document).ready(function () {
+            const inputs = $("input.inputQuantity");
+
+            for (let i = 0; i < inputs.length; i++) {
+                const input = inputs[i];
+                const maxQuan = +input.getAttribute("data-maxQuan");
+                const inputID = input.getAttribute("id");
+
+                $("#" + inputID).inputFilter(function (value) {
+                    return /^\d*$/.test(value) && value != 0 && value <= maxQuan;   // Allow digits only, using a RegExp
+                });
+            }
+        });
+    </script>
+}

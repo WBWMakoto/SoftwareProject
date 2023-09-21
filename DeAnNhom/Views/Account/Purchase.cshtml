@@ -1,0 +1,95 @@
+﻿@using DeAnNhom.Models
+@using System.Globalization
+
+@model IEnumerable<OrderPro>
+
+@{
+    ViewBag.Title = "Purchase";
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+
+    string formatCurrency(decimal price)
+    {
+        return price.ToString("C0", CultureInfo.CreateSpecificCulture("VN-vn"));
+    }
+}
+
+<section class="max-w-screen-xl w-full text-black mx-auto pt-5 flex flex-auto gap-5">
+    @{ Html.RenderAction("SideBar"); }
+
+    <div class="w-full flex-auto">
+        @if (Model.Count() > 0)
+        {
+            <div class="w-full h-full flex-auto flex flex-col gap-8">
+                @foreach (var order in Model)
+                {
+                    HashSet<Seller> Shops = new HashSet<Seller>();
+                    <div class="flex flex-col gap-3 p-4 bg-white rounded-md shadow-lg">
+                        <h3 class="font-semibold text-2xl shadow-lg py-4 px-6 rounded-md">
+                            <i class="fa-solid fa-calendar"></i> @order.DateOrder.ToLongDateString()
+                        </h3>
+
+                        <div class="flex flex-col gap-3">
+                            @foreach (var detail in order.OrderDetails.OrderBy(o => o.Product.Seller.ShopName))
+                            {
+                                if (!Shops.Contains(detail.Product.Seller))
+                                {
+                                    Shops.Add(detail.Product.Seller);
+
+                                    <div class="shadow-lg py-4 px-6 rounded-md flex flex-col gap-3">
+                                        <div class="w-full flex justify-between items-center">
+                                            <h4 class="text-xl font-semibold">
+                                                <i class="fa-solid fa-shop"></i> @detail.Product.Seller.ShopName
+                                            </h4>
+
+                                            <div>
+                                                <a class="btn btn-outline text-[#f6412d] border-[#f6412d] hover:bg-transparent hover:text-[#f6412d] hover:border-[#f6412d]"
+                                                   href="@Url.Action("Index", "Product", new { sellerID = detail.Product.SellerID })">
+                                                    Xem Shop
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex flex-col gap-3">
+                                            @foreach (var _detail in order.OrderDetails.Where(d => d.Product.Seller == detail.Product.Seller))
+                                            {
+                                                Product pro = _detail.Product;
+
+                                                <div class="w-full flex justify-between">
+                                                    <a class="w-[90%] flex gap-3" href="@Url.Action("Details", "Product", new { name = pro.ProductID })">
+                                                        <img src="@Url.Content(pro.ProductImage)" class="w-[80px] h-[80px] rounded-md border border-gray-300" height="80" width="80" />
+                                                        <div class="flex flex-col gap-1">
+                                                            <span class="text-xl"> @pro.ProductName </span>
+                                                            <div>
+                                                                <span class="text-sm text-gray-500 block"> Phân loại size: @_detail.Sizes </span>
+                                                                <span class="text-sm"> x@_detail.Quantity </span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <div class="w-[10%] flex-none flex items-center">
+                                                        <span class="text-[#f6412d]"> @formatCurrency(pro.Price) </span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <div class="w-full rounded-md shadow-lg py-4 px-6 flex items-center justify-end gap-5">
+                            <span class="text-lg"> Tổng số tiền: </span>
+                            <span class="text-2xl text-[#f6412d]"> @formatCurrency(order.OrderDetails.Sum(o => o.Quantity * o.Product.Price)) </span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="h-full text-center flex flex-col items-center justify-center bg-white shadow-lg rounded-md">
+                <img src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/cart/9bdd8040b334d31946f49e36beaf32db.png"
+                     class="h-[150px] w-[150px] " loading="lazy" />
+                <span> Bạn chưa mua gì hết. <a href="@Url.Action("Index", "Product")" class="text-blue-600 block"> Mua hàng.</a> </span>
+            </div>
+        }
+    </div>
+</section>

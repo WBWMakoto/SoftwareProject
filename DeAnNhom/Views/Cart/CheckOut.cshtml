@@ -1,0 +1,14 @@
+﻿@{
+    Layout = "~/Views/Shared/Layout/_CartLayout.cshtml";
+}
+
+<div class="max-w-screen-xl mx-auto py-5 flex flex-1">
+    @if (ViewBag.isSuccess)
+    {
+        Html.RenderAction("CheckoutSuccess");
+    }
+    else
+    {
+        Html.RenderAction("CheckoutFailed");
+    }
+</div>

@@ -1,0 +1,139 @@
+﻿@using DeAnNhom.Models
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.Owin
+@using Microsoft.AspNet.Identity.EntityFramework
+
+@{
+    var currentUser = new ApplicationUser();
+    bool isSeller = false;
+
+    if (Request.IsAuthenticated)
+    {
+        var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        var roleManager = HttpContext.Current.GetOwinContext().Get<ApplicationRoleManager>();
+
+        currentUser = userManager.FindById(User.Identity.GetUserId());
+        var rolesForUser = userManager.GetRoles(currentUser.Id);
+
+        if (rolesForUser.Contains(roleManager.FindByName("Seller").Name))
+        {
+            isSeller = true;
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Shoppy - @ViewBag.Title</title>
+
+    <script src="https://kit.fontawesome.com/34bc6c9717.js" crossorigin="anonymous"></script>
+    @Styles.Render("~/Content/css/base.css")
+</head>
+
+<body class="flex flex-col min-h-screen w-screen overflow-x-hidden !bg-gray-100">
+    <header class="text-white flex-none">
+        <div class="bg-[#ee4d2d] h-[40px]">
+            <nav id="top-nav" class="flex justify-between text-sm m-auto h-full max-w-screen-xl py-2 px-1">
+                <div id="top-left">
+                    <ul class="flex gap-2">
+                        @if (Request.IsAuthenticated && isSeller)
+                        {
+                            <li><a href="@Url.Action("Manage", "Product")" class="hover:text-[#fbc797]"> Kênh Người Bán </a></li>
+                        }
+                        else
+                        {
+                            <li> <a href="@Url.Action("BecomeSeller", "Account")" class="hover:text-[#fbc797]"> Trở thành Người bán Shoppy </a> </li>
+                        }
+                        <li class="border-l-2 border-gray-300/60 pl-2">
+                            <a href="#" class="hover:text-[#fbc797]"> Tải ứng dụng </a>
+                        </li>
+                        <li class="border-l-2 border-gray-300/60 pl-2">
+                            <span>
+                                Kết nối
+                                <i class="fa-brands fa-facebook"></i>
+                                <i class="fa-brands fa-instagram"></i>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <div id="top-right">
+                    <ul class="flex gap-5 items-center">
+                        <li>
+                            <a href="#" class="hover:text-[#fbc797]"> <i class="fa-regular fa-bell"></i> Thông báo </a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-[#fbc797]"> <i class="fa-regular fa-circle-question"></i> Hỗ trợ </a>
+                        </li>
+                        <li>
+                            <div class="dropdown-hover group dropdown">
+                                <label tabindex="0" class="cursor-pointer py-2 group-hover:text-[#fbc797]">
+                                    <i class="fa-solid fa-globe"></i> Tiếng Việt
+                                    <i class="fa-solid fa-chevron-down transition-transform group-hover:-rotate-180"></i>
+                                </label>
+                                <ul tabindex="0"
+                                    class="dropdown-content menu rounded-box mt-2 w-36 border border-black bg-white text-black shadow">
+                                    <li><a>Tiếng Việt</a></li>
+                                    <li><a>Tiếng Anh</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        @if (Request.IsAuthenticated)
+                        {
+                            <li>
+                                <a href="@Url.Action("Profile", "Account")" title="Manage" class="flex items-center justify-center gap-1">
+                                    <img class="w-6 h-6 rounded-full" src="@Url.Content(currentUser.ProfileImg)" />
+                                    <span class="text-md"> @currentUser.Customer.Name </span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <div class="flex gap-2">
+                                    @Html.ActionLink("Đăng Ký", "Register", "Account")
+                                    @Html.ActionLink("Đăng Nhập", "Login", "Account", null, new { @class = "border-l-[1px] border-gray-300/60 pl-2" })
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <div class="h-[100px] bg-white text-[#ee4d2d] border-b-[1px] border-b-gray-500\/40">
+            <nav id="bottom-nav" class="flex justify-between items-center text-sm m-auto h-full max-w-screen-xl py-2 px-1">
+                <div>
+                    <a href="/" class="flex gap-3 h-full items-center justify-center text-4xl">
+                        Shoppy
+                        <span class="h-[50%] flex items-center text-xl border-l-[1px] border-l-[#ee4d2d] pl-3"> Giỏ hàng </span>
+                    </a>
+                </div>
+                <div class="w-[50%] h-max text-white rounded-md border-2 border-transparent p-1 focus-within:border-black">
+                    @using (Html.BeginForm("Index", "Product", FormMethod.Get, new { @class = "flex w-full gap-2 rounded-md bg-white border-2 border-[#ee4d2d]" }))
+                    {
+                        <input type="text" class="w-full h-[40px] text-black p-1 pl-4 rounded-l-md focus:outline-none" placeholder="Type something to search" />
+                        <button class="bg-[#fb5533] py-1 px-8">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    }
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="py-5 flex-auto flex">
+        @RenderBody()
+    </main>
+
+    @Html.Partial("Components/Footer")
+
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("script", false)
+</body>
+</html>

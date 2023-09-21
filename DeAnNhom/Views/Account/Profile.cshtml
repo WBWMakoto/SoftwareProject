@@ -1,0 +1,199 @@
+﻿@using DeAnNhom.Models
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.Owin;
+@using Microsoft.AspNet.Identity.EntityFramework
+
+@model ProfileViewModel
+
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+
+    var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+    var roleManager = HttpContext.Current.GetOwinContext().Get<ApplicationRoleManager>();
+
+    var currentUser = userManager.FindById(User.Identity.GetUserId());
+    var rolesForUser = userManager.GetRoles(currentUser.Id);
+    bool isSeller = false;
+
+    if (rolesForUser.Contains(roleManager.FindByName("Seller").Name))
+    {
+        isSeller = true;
+    }
+
+    string UserImg = currentUser.ProfileImg ?? "https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg";
+
+    string[] _splitUserEmail = currentUser.Email.Split('@');
+
+    string firstEmail = _splitUserEmail[0];
+    string userEmail = $"{firstEmail.Substring(0, firstEmail.Length >= 3 ? 2 : firstEmail.Length - 1)}{(firstEmail.Length >= 3 ? new string('*', firstEmail.Length - 2) : "")}@{_splitUserEmail[1]}";
+
+    string userPhone = "";
+
+    if (currentUser.PhoneNumber != null)
+    {
+        userPhone = currentUser.PhoneNumber.Substring(currentUser.PhoneNumber.Length - 2);
+    }
+}
+
+<section class="max-w-screen-xl w-full text-black mx-auto pt-5 flex flex-auto gap-5">
+    @{ Html.RenderAction("SideBar"); }
+
+    <div class="w-full flex-auto bg-white shadow-lg rounded-md">
+        <div id="top-head" class="py-5 px-6 border-b-[1px] border-b-gray-500/40">
+            <h4 class="text-xl font-semibold"> Hồ sơ của tôi </h4>
+            <p class="text-gray-600 text-sm"> Quản lý thông tin hồ sơ để bảo mật tài khoản. </p>
+        </div>
+
+        @using (Html.BeginForm("Profile", "Account", null, FormMethod.Post, new
+        {
+            @class = "text-black py-5 px-6 w-full flex gap-5",
+            role = "form",
+            enctype = "multipart/form-data"
+        }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.EditorFor(m => m.Id, new { htmlAttributes = new { @class = "hidden", @Value = currentUser.Id } })
+            <section id="change-info" class="w-[65%]">
+                <div class="flex flex-col w-full gap-7">
+                    <div class="w-full flex items-center gap-5">
+                        @Html.LabelFor(m => m.UserName, new { @class = "w-[140px] text-right" })
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "w-full py-1 px-3 focus:outline-none border border-gray-400/60 rounded-md", @Value = currentUser.Customer.Name })
+                    </div>
+
+                    <div class="w-full flex items-center gap-5">
+                        @Html.LabelFor(m => m.Email, new { @class = "w-[140px] text-right" })
+                        <div class="w-full py-1">
+                            <span> @userEmail </span>
+                            <a class="text-blue-600 underline" href="@Url.Action("Update", new { name = "Email" })"> Thay đổi </a>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex items-center gap-5">
+                        @Html.LabelFor(m => m.PhoneNum, new { @class = "w-[140px] text-right" })
+                        <div class="w-full py-1">
+                            @if (currentUser.PhoneNumber == null)
+                            {
+                                <a class="text-blue-600 underline" href="@Url.Action("Update", new { name = "Phone" })">
+                                    Thêm số điện thoại mới
+                                </a>
+                            }
+                            else
+                            {
+                                <span> @currentUser.PhoneNumber </span>
+                                <a class="text-blue-600 underline" href="@Url.Action("Update", new { name = "Phone" })"> Thay đổi </a>
+                            }
+                        </div>
+                    </div>
+
+                    @if (isSeller)
+                    {
+                        <div class="w-full flex items-center gap-5">
+                            @Html.LabelFor(m => m.ShopName, new { @class = "w-[140px] text-right" })
+                            @Html.TextBoxFor(m => m.ShopName, new { @class = "w-full py-1 px-3 focus:outline-none border border-gray-400/60 rounded-md", @Value = currentUser.Seller.ShopName })
+                        </div>
+                    }
+
+                    <div class="w-full flex items-center gap-5">
+                        @Html.LabelFor(m => m.Gender, new { @class = "w-[140px] text-right" })
+                        <div class="w-full flex gap-5">
+                            <div class="flex justify-center items-center gap-1">
+                                @Html.RadioButtonFor(m => m.Gender, "Men", new { id = "Men", @class = "radio checked:bg-[#f7462e] checked:border-[#f7462e] border-gray-300 radio-xs" })
+                                @Html.Label("Nam", new { @For = "Men" })
+                            </div>
+                            <div class="flex justify-center items-center gap-1">
+                                @Html.RadioButtonFor(m => m.Gender, "Women", new { id = "Women", @class = "radio checked:bg-[#f7462e] checked:border-[#f7462e] border-gray-300 radio-sm" })
+                                @Html.Label("Nữ", new { @For = "Women" })
+                            </div>
+                            <div class="flex justify-center items-center gap-1">
+                                @Html.RadioButtonFor(m => m.Gender, "null", new { id = "Null", @class = "radio checked:bg-[#f7462e] checked:border-[#f7462e] border-gray-300 radio-sm" })
+                                @Html.Label("Khác", new { @For = "Null" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex items-center gap-5">
+                        @Html.LabelFor(m => m.BirthDay, new { @class = "w-[140px] text-right" })
+                        <div class="w-full">
+                            @Html.EditorFor(m => m.BirthDay, "", new { htmlAttributes = new { @class = "focus:outline-none", @Value = (currentUser.Customer.BirthDay ?? DateTime.Now).ToString("yyyy-MM-dd") } })
+                        </div>
+                    </div>
+
+                    <div class="w-full flex items-center gap-5">
+                        <div class="w-[140px] text-right"></div>
+                        <div class="w-full">
+                            <button type="submit" class="btn border-none hover:bg-[#f7462e] bg-[#f7462e] text-white py-2 px-5 rounded-md">
+                                Lưu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="upload-pfp" class="w-[35%] flex flex-col">
+                <div class="flex justify-start items-center flex-col gap-4 border-l-[1px] ml-10">
+                    <img src="@Url.Content(UserImg)" id="UploadImgHolder" height="150" width="150" class="rounded-full border border-gray-400/60 w-[150px] h-[150px]" />
+                    <input type="file" class="hidden" id="UploadImg" name="UploadImg" onchange="changeImg(this)" accept=".png, .jpg, .jpeg" />
+
+                    <button class="py-2 px-6 btn btn-outline" id="UploadImgBtn" type="button">
+                        Chọn Ảnh
+                    </button>
+
+                    <p class="text-sm text-gray-400/80">
+                        Dụng lượng file tối đa 1 MB
+                        <br />
+                        Định dạng: .JPEG, .PNG
+                    </p>
+                </div>
+                @Html.ValidationSummary()
+            </section>
+        }
+    </div>
+</section>
+
+@section script {
+    <script>
+        const changeImg = (self) => {
+            let reader = new FileReader();
+            if (self.files && self.files[0]) {
+
+                reader.onload = (e) => {
+                    $("#UploadImgHolder").attr("src", e.target.result);
+                }
+
+                reader.readAsDataURL(self.files[0]);
+            }
+        }
+
+        $("#UploadImgBtn").click(() => {
+            document.querySelector("input#UploadImg").click();
+        })
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const genders = "@( currentUser.Genders == null ? "" : currentUser.Genders.ToString().ToLower() )";
+
+            console.log(genders);
+
+            switch (genders)
+            {
+                case "true":
+                    return $("input#Men")["0"].checked = true;
+                case "false":
+                    return $("input#Women")["0"].checked = true;
+                default:
+                    return $("input#Null")["0"].checked = true;
+            };
+
+            //if (genders == null) {
+            //    return $("input#Null")["0"].checked = true;
+            //}
+            //else if (genders) {
+            //    return $("input#Men")["0"].checked = true;
+            //}
+            //else {
+            //    return $("input#Women")["0"].checked = true;
+            //}
+        });
+    </script>
+} 

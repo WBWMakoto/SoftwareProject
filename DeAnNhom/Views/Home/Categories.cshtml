@@ -1,0 +1,20 @@
+﻿@using DeAnNhom.Models
+
+@model IEnumerable<Category>
+
+<section class="m-auto w-full max-w-screen-xl py-5 text-black">
+    <div class="bg-white p-6 rounded-md shadow-md">
+        <h2 class="text-gray-500/60 pb-6"> Danh mục </h2>
+
+        <div class="w-full grid grid-cols-10 gap-0">
+            @foreach (var cate in Model)
+            {
+                <a href="@Url.Action("Index", "Product", new { category = cate.CategoryName })"
+                   class="h-[150px] border border-gray-300 flex flex-col items-center justify-center gap-3 rounded-lg">
+                    <img src="@Url.Content(cate.CategoryImage)" class="rounded-lg h-[80px]" />
+                    @cate.CategoryName
+                </a>
+            }
+        </div>
+    </div>
+</section>

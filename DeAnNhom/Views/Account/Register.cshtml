@@ -1,0 +1,120 @@
+﻿@using DeAnNhom.Models
+@model RegisterViewModel
+
+@{
+    ViewBag.Title = "Đăng ký";
+    Layout = "~/Views/Shared/Layout/_AccountLayout.cshtml";
+}
+
+@using (Html.BeginForm("Register", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new
+{
+    @class = "flex w-[25rem] flex-col gap-5 rounded-md bg-white p-5 text-lg font-medium text-black",
+    role = "form"
+}))
+{
+    @Html.AntiForgeryToken()
+    <label>@ViewBag.Title</label>
+
+    <section class="flex flex-col" style="gap: 1rem;">
+        <div>
+            @Html.TextBoxFor(
+                m => m.Email,
+                new
+                {
+                    @class = "w-full bg-white rounded-md border border-gray-400/60 py-2 px-4 placeholder:text-sm placeholder:text-gray-600 focus:outline-none",
+                    autocomplete = "on",
+                    placeholder = "Email"
+                }
+            )
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-red-500 text-sm" })
+        </div>
+
+        <div>
+            <div class="flex w-full rounded-md border border-gray-400/60 py-2 px-4">
+                @Html.PasswordFor(
+                    m => m.Password,
+                    new
+                    {
+                        id = "password",
+                        @class = "w-full bg-white placeholder:text-sm placeholder:text-gray-600 focus:outline-none",
+                        autocomplete = "on",
+                        placeholder = "Mật khẩu"
+                    }
+                )
+
+                <button type="button" id="show-pass" tabindex="-1" onclick="togglePass('show-pass', 'password')">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+            </div>
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-red-500 text-sm" })
+        </div>
+
+        <div>
+            <div class="flex w-full rounded-md border border-gray-400/60 py-2 px-4">
+                @Html.PasswordFor(
+                    m => m.ConfirmPassword,
+                    new
+                    {
+                        id = "confirmation",
+                        @class = "w-full bg-white placeholder:text-sm placeholder:text-gray-600 focus:outline-none",
+                        autocomplete = "on",
+                        placeholder = "Nhập lại mật khẩu"
+                    }
+                )
+
+                <button type="button" id="show-confirm" tabindex="-1" onclick="togglePass('show-confirm', 'confirmation')">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+            </div>
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-red-500 text-sm" })
+        </div>
+
+        <button type="submit" class="w-full rounded-md bg-[#ee4d2d] py-2 text-white disabled:cursor-not-allowed disabled:bg-[#f4836c]">
+            Tiếp tục
+        </button>
+
+        @if (ViewBag.Error != null)
+        {
+            <span class="text-sm text-red-500"> @ViewBag.Error </span>
+        }
+    </section>
+
+    <section class="flex items-center gap-5 text-xs text-gray-500/60">
+        <div class="w-full border-t-[1px] border-gray-500 opacity-40"></div>
+        <span>HOẶC</span>
+        <div class="w-full border-t-[1px] border-gray-500 opacity-40"></div>
+    </section>
+
+    <section class="flex items-center gap-5 text-sm">
+        <button disabled type="button" class="w-full border border-gray-500 border-opacity-40 py-2 disabled:cursor-not-allowed">Facebook</button>
+        <button disabled type="button" class="w-full border border-gray-500 border-opacity-40 py-2 disabled:cursor-not-allowed">Google</button>
+    </section>
+
+    <section class="text-center text-sm">
+        Bằng việc đăng kí, bạn đã đồng ý với Shoppy về <br />
+        <a class="text-[#ee4d2d]" href="#">Điều khoản dịch vụ</a>
+        &
+        <a class="text-[#ee4d2d]" href="#">Chính sách bảo mật</a>
+    </section>
+
+    <section class="text-center text-sm text-gray-400/60">
+        Bạn đã có tài khoản? @Html.ActionLink("Đăng nhập", "Login", "Account", null, new { @class = "text-[#ee4d2d]" })
+    </section>
+}
+
+@section script {
+    <script>
+        const togglePass = (btnID, inputID) => {
+            const showbtn = document.querySelector(`button#${btnID}`);
+            const input = document.querySelector(`input#${inputID}`);
+
+            if (showbtn.children[0].classList[1] == "fa-eye") {
+                showbtn.children[0].className = "fa-regular fa-eye-slash";
+                input.type = "text";
+            } else {
+                showbtn.children[0].className = "fa-regular fa-eye";
+                input.type = "password";
+            }
+        };
+    </script>
+} 

@@ -1,0 +1,254 @@
+﻿@using DeAnNhom.Models
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.Owin
+@using Microsoft.AspNet.Identity.EntityFramework
+@using System.Globalization
+
+@model ProductAddToCartViewModel
+
+@{
+    ViewBag.Title = Model.product.ProductName;
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+
+    var sizes = Model.product.Sizes.Split(';');
+
+    bool UserIsSeller = Model.product.SellerID == User.Identity.GetUserId();
+}
+
+<div class="mx-auto h-max max-w-screen-xl w-full flex flex-col gap-5">
+    <section class="relative mt-5 p-4 text-black bg-white rounded-md shadow-lg flex gap-10">
+        @if (UserIsSeller)
+        {
+            <div class="absolute top-5 right-5">
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="w-12 btn btn-ghost">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </label>
+                    <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-max">
+                        <li>
+                            <label for="my-modal-4" id="openModel" class="text-center cursor-pointer">
+                                <i class="fa-solid fa-trash"></i> Xóa
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        }
+
+        <div id="productImg" class="flex items-center justify-center min-w-[450px] h-[450px] overflow-hidden rounded-md">
+            <img src="@Url.Content(Model.product.ProductImage)" id="UploadImgHolder" height="450" width="450" />
+        </div>
+        @using (Html.BeginForm("BuyNow", "Cart", FormMethod.Post, new
+        {
+            @class = "h-full flex-auto pr-4",
+            @id = "productInfo"
+        }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.TextBoxFor(m => m.ProductID, new { @class = "hidden", @Value = Model.product.ProductID })
+
+            <div class="flex flex-col gap-5 w-full h-full text-xl">
+                <h3 class="w-full h-max py-2 px-3 rounded-md overflow-hidden"
+                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">
+                    @Html.DisplayFor(m => m.product.ProductName)
+                </h3>
+
+                <span class="relative text-[#f7442e] bg-[#fafafa] px-5">
+                    <span class="text-4xl">
+                        @Model.product.Price.ToString("C0", CultureInfo.CreateSpecificCulture("VN-vn"))
+                    </span>
+                </span>
+
+                <div class="px-5 text-gray-500 min-h-[50px] flex">
+                    <span class="w-[120px] block">
+                        Size
+                    </span>
+                    <div class="flex gap-2 h-8">
+                        @Html.EditorFor(m => m.Size, new { htmlAttributes = new { @class = "hidden", @Value = sizes.First() } })
+                        @foreach (string size in sizes)
+                        {
+                            <button class="w-[100px] h-max border-2 rounded-md @(sizes.First() == size ? "border-[#f05d40] text-[#f05d40]": "border-gray-300") px-2 py-1 text-center sizeBtn" type="button">
+                                @size
+                            </button>
+                        }
+                    </div>
+                </div>
+
+                <div class="px-5 text-gray-500 min-h-[50px] flex">
+                    <span class="w-[120px] block">
+                        Số lượng
+                    </span>
+                    <div class="flex gap-2 h-8">
+                        <div class="border border-gray-300 flex items-center justify-center">
+                            <button onclick="decreaseAmount()" type="button" class="text-center w-8 h-8 border-r-[1px] border-gray-300"> <i class="fa-solid fa-minus"></i> </button>
+                            <input class="w-[60px] h-8 border border-gray-300 focus:outline-none text-center" name="Quantity" id="Quantity" value="1" />
+                            <button onclick="increaseAmount()" type="button" class="text-center w-8 h-8 border-l-[1px] border-gray-300"> <i class="fa-solid fa-plus"></i> </button>
+                        </div>
+                        <span class="h-8 text-sm flex items-center"> @Html.DisplayFor(m => m.product.Quantity) có sẵn </span>
+                    </div>
+                </div>
+
+                <div class="text-lg" id="btnGroup">
+                    <button class="bg-[#ffeee8] hover:bg[#fff5f1] text-[#f05d40] py-2 px-4 rounded-md border-2 border-[#f05d40] disabled:cursor-not-allowed disabled:border-transparent" disabled=@UserIsSeller type="button" onclick="addToCart()">
+                        <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ hàng
+                    </button>
+                    <button class="bg-[#f05d40] text-white py-2 px-4 rounded-md disabled:bg-[#f4836c] disabled:cursor-not-allowed" disabled=@UserIsSeller type="submit">
+                        Mua ngay
+                    </button>
+                </div>
+            </div>
+        }
+    </section>
+
+    <section class="p-4 text-black bg-white rounded-md shadow-lg flex justify-between items-center">
+        <div class="flex gap-5">
+            <img src="@Url.Content(Model.product.Seller.User.ProfileImg)"
+                 class="w-[78px] h-[78px] rounded-full border border-[#f7412d]" />
+            <div class="flex flex-col justify-between">
+                <span> @(Model.product.Seller.ShopName)</span>
+                <a href="@Url.Action("Index", new { sellerID = Model.product.SellerID })" class="py-2 px-4 bg-[#f6402d] text-white rounded-lg w-max">
+                    Xem shop
+                </a>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 grid-rows-2 h-full w-max gap-x-10 gap-y-2">
+            <div>
+                <span class="text-[#f6402d]"> Joined Date: </span>
+                <span id="joinedDate"> </span>
+            </div>
+            <div>
+                <span class="text-[#f6402d]"> Products: </span>
+                @Html.Action("TotalProduct", new { sellerID = Model.product.SellerID })
+            </div>
+        </div>
+    </section>
+
+    <section class="p-4 text-black bg-white rounded-md shadow-lg">
+        <div class="w-full bg-[#fafafa] pb-6">
+            <span class="text-xl"> Mô tả sản phẩm </span>
+        </div>
+        <div class="w-full">
+            @foreach (string des in Model.product.Decription.Split('\n'))
+            {
+                <p class="w-full py-2 px-3 rounded-md">
+                    @des
+                </p>
+            }
+        </div>
+    </section>
+</div>
+
+@section model
+{
+    <!-- Put this part before </body> tag -->
+    <input type="checkbox" id="my-modal-4" class="modal-toggle" />
+    <label for="my-modal-4" class="modal cursor-pointer">
+        <label class="modal-box relative" for="">
+            @using (Html.BeginForm("Delete", "Product", FormMethod.Post, new { @class = "text-center flex flex-col gap-5" }))
+            {
+                @Html.AntiForgeryToken()
+                <input value="@Model.product.ProductID" class="hidden" name="productID" id="productID" />
+                <h3 class="text-5xl text-red-600"> Cảnh báo </h3>
+                <p class="text-xl overflow-hidden h-full"
+                   style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical">
+                    Bạn có chắc bạn muốn xóa sản phẩm @Model.product.ProductName
+                </p>
+                <div class="w-full flex items-center justify-end">
+                    <button type="submit" class="bg-red-600 text-white rounded-md py-2 px-5">
+                        Xóa
+                    </button>
+                </div>
+            }
+        </label>
+    </label>
+}
+
+@section script
+{
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/relativeTime.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
+    <script>
+        dayjs.extend(window.dayjs_plugin_relativeTime);
+        dayjs.extend(window.dayjs_plugin_customParseFormat);
+
+        $("#joinedDate")[0].innerText = dayjs("@(Model.product.Seller.User.JoinedDate?.ToString("dd-MM-yyyy HH:mm:ss"))", "DD-MM-YYYY HH:mm:ss").fromNow();
+
+        const addToCart = async () => {
+            const id = @Model.product.ProductID;
+            const size = document.querySelector("input#Size").getAttribute("value");
+            const quantity = document.querySelector("input#Quantity").value;
+
+            if (size.length == 0) {
+                alert("Vui lòng chọn 1 size");
+                return;
+            }
+
+            await fetch(`/Cart/AddToCart?proID=${id}&size=${size}&quantity=${quantity}`, { method: "POST" });
+            window.location.reload();
+        };
+
+        const decreaseAmount = () => {
+            let currentQuan = (+$("#Quantity")[0].value);
+
+            if (currentQuan - 1 > 0) {
+                $("#Quantity")[0].value = currentQuan - 1;
+            }
+        };
+
+        const increaseAmount = () => {
+            let currentQuan = (+$("#Quantity")[0].value);
+
+            if (currentQuan + 1 <= (+@Model.product.Quantity)) {
+                $("#Quantity")[0].value = currentQuan + 1;
+            }
+        };
+
+        $(".sizeBtn").on("click", (e) => {
+            const allSize = document.querySelectorAll("button.sizeBtn");
+
+            const UnactiveClass = "w-[100px] h-max border-2 rounded-md border-gray-300 px-2 py-1 text-center sizeBtn";
+            const ActiveClass   = "w-[100px] h-max border-2 rounded-md border-[#f05d40] text-[#f05d40] px-2 py-1 text-center sizeBtn";
+
+            for (let i = 0; i < allSize.length; i++) {
+                allSize[i].setAttribute("class", UnactiveClass);
+            }
+            e.target.className = ActiveClass;
+            $("input#Size")[0].setAttribute("value", e.target.innerText);
+        });
+
+        (function ($) {
+            $.fn.inputFilter = function (callback) {
+                return this.on("input keydown keyup mousedown mouseup select contextmenu drop focusout", function (e) {
+                    if (callback(this.value)) {
+                        // Accepted value
+                        if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                            $(this).removeClass("input-error");
+                            this.setCustomValidity("");
+                        }
+                        this.oldValue = this.value;
+                        this.oldSelectionStart = this.selectionStart;
+                        this.oldSelectionEnd = this.selectionEnd;
+                    }
+                    else if (this.hasOwnProperty("oldValue")) {
+                        // Rejected value - restore the previous one
+                        $(this).addClass("input-error");
+                        this.reportValidity();
+                        this.value = this.oldValue;
+                        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                    }
+                    else {
+                        // Rejected value - nothing to restore
+                        this.value = "";
+                    }
+                });
+            };
+        }(jQuery));
+
+        $(document).ready(function () {
+            $("#Quantity").inputFilter(function (value) {
+                return /^\d*$/.test(value) && value != 0 && value <= (+@Model.product.Quantity);
+            });
+        });
+    </script>
+}

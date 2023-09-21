@@ -1,0 +1,179 @@
+﻿@using DeAnNhom.Models
+@using PagedList
+@using System.Globalization
+
+@model PagedList<Product>
+
+@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+
+    bool isEmpty = Model.Count() == 0;
+
+    string FormatPrice(decimal price)
+    {
+        return price.ToString("C0", CultureInfo.CreateSpecificCulture("VN-vn"));
+    }
+
+    object getRouteParams(int page)
+    {
+        return new
+        {
+            page = page,
+        };
+    }
+}
+
+<div class="max-w-screen-xl w-full mx-auto flex flex-1 flex-col gap-5 py-3">
+    <section class="grid grid-cols-8 gap-4 bg-white shadow-md rounded-lg py-3 px-10 text-center text-gray-400 h-[60px] [&_span]:flex [&_span]:items-center [&_span]:justify-center" id="top">
+        <span class="col-span-4 text-black !justify-start"> Sản phẩm </span>
+        <span> Đơn giá</span>
+        <span class="col-span-2 flex justify-center"> Số lượng </span>
+        <span> Thao tác </span>
+    </section>
+
+    <section class="flex flex-col gap-y-5 bg-white shadow-md rounded-lg py-3 px-10 @(isEmpty ? "flex-1" : "flex-none")" id="showProduct">
+        @if (!isEmpty)
+        {
+            <a class="w-full h-[80px] flex flex-col items-center justify-center border border-dashed border-[#ee4d2d] rounded-lg text-xl" href="@Url.Action("Create")">
+                <i class="fa-solid fa-plus"></i>
+                <span> Thêm sản phẩm </span>
+            </a>
+
+            foreach (var item in Model)
+            {
+                <div class="grid grid-cols-8 gap-4 col-span-2">
+                    <div class="col-span-4 flex justify-between">
+                        <a href="@Url.Action("Details", "Product", new { name = item.ProductID })">
+                            <div class="text-left flex items-start gap-3">
+                                <img src="@Url.Content(item.ProductImage)" class="w-[80px] h-[80px] rounded-md" />
+                                <div class="h-max overflow-hidden text-sm w-[200px]"
+                                     style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">
+                                    @item.ProductName
+                                </div>
+                            </div>
+                        </a>
+                        <div class="w-1/2 flex flex-wrap gap-2">
+                            @foreach (string size in item.Sizes.Split(';'))
+                            {
+                                <button class="min-w-[80px] h-max border-2 rounded-md border-gray-300 px-2 py-1 text-center sizeBtn" type="button">
+                                    @size
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    <span class="flex items-center justify-center">
+                        @FormatPrice(item.Price)
+                    </span>
+
+                    <span class="col-span-2 min-h-[50px] flex items-center justify-center">
+                        Có @item.Quantity trong kho hàng
+                    </span>
+
+                    <div class="flex items-center gap-2">
+                        <a href="@Url.Action("Edit", new { name = item.ProductID })" class="bg-[#ee4d2d] text-center rounded-md px-5 py-1 text-white">
+                            <i class="fa-solid fa-gears"></i> Sửa
+                        </a>
+                        <label for="my-modal-4" id="openModel" class="bg-[#ee4d2d] text-center rounded-md px-5 py-1 text-white cursor-pointer triggerBtn" data-productID="@item.ProductID" data-productName="@item.ProductName">
+                            <i class="fa-solid fa-trash"></i> Xóa
+                        </label>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-span-8 flex-1 text-center flex flex-col items-center justify-center">
+                <img src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/cart/9bdd8040b334d31946f49e36beaf32db.png"
+                     class="h-[150px] w-[150px] " loading="lazy" />
+                <span>
+                    Bạn chưa có sản phẩm nào. <a href="@Url.Action("Create")" class="text-blue-600"> Tạo sản phẩm.</a>
+                </span>
+            </div>
+        }
+    </section>
+
+    @if (Model.Count() > 0)
+    {
+        <section class="m-auto h-max max-w-screen-xl pt-5 text-black flex items-center justify-center">
+            <div class="w-max flex gap-3 bg-white shadow-lg py-3 px-6 rounded-md">
+                <a href="@Url.Action("Manage", getRouteParams(1))"
+                   class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageNumber <= 2 ? "btn-disabled" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                        <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                    </svg>
+                </a>
+                <a href="@Url.Action("Manage", getRouteParams(Model.PageNumber - 1))"
+                   class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageNumber <= 1 ? "btn-disabled" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                    </svg>
+                </a>
+
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    <a href="@Url.Action("Manage", getRouteParams(i))"
+                       class="btn btn-ghost transition-color @( Model.PageNumber == i ? "bg-[#f6402d] text-white hover:bg-[#f6402d]" : "hover:bg-[#fd6133] hover:text-white" )">
+                        @i
+                    </a>
+                }
+
+                <a href="@Url.Action("Manage", getRouteParams(Model.PageNumber + 1))"
+                   class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageNumber + 1 > Model.PageCount ? "btn-disabled" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                    </svg>
+                </a>
+                <a href="@Url.Action("Manage", getRouteParams(Model.PageCount))"
+                   class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageNumber + 2 > Model.PageCount ? "btn-disabled" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z" />
+                        <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z" />
+                    </svg>
+                </a>
+            </div>
+        </section>
+    }
+</div>
+
+@section model
+{
+    <!-- Put this part before </body> tag -->
+    <input type="checkbox" id="my-modal-4" class="modal-toggle" />
+    <label for="my-modal-4" class="modal cursor-pointer">
+        <label class="modal-box relative" for="">
+            @using (Html.BeginForm("Delete", "Product", FormMethod.Post, new { @class = "text-center flex flex-col gap-5" }))
+            {
+                @Html.AntiForgeryToken()
+                <input value="" class="hidden" name="productID" id="productID" />
+                <h3 class="text-5xl text-red-600"> Cảnh báo </h3>
+                <p class="text-xl">
+                    Bạn có chắc bạn muốn xóa sản phẩm <span id="productName">  </span>
+                </p>
+                <div class="w-full flex items-center justify-end">
+                    <button type="submit" class="bg-red-600 text-white rounded-md py-2 px-5">
+                        Xóa
+                    </button>
+                </div>
+            }
+        </label>
+    </label>
+}
+
+@section script
+{
+    <script>
+        const triggerBtn = $(".triggerBtn");
+
+        triggerBtn.on("click", (e) => {
+            const btn = e.target;
+            const productID = btn.getAttribute("data-productID");
+            const productName = btn.getAttribute("data-productName");
+
+            $("span#productName")[0].innerText = productName;
+            $("input#productID")[0].setAttribute("value", productID);
+        })
+    </script>
+
+}

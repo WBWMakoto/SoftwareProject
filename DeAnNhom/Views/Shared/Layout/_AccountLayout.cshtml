@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Shoppy - @ViewBag.Title</title>
+
+    <script src="https://kit.fontawesome.com/34bc6c9717.js" crossorigin="anonymous"></script>
+    @Styles.Render("~/Content/css/base.css")
+</head>
+<body class="flex min-h-screen w-screen flex-col overflow-x-hidden">
+    <header class="h-20 flex-[0_1_auto] bg-white">
+        <nav class="m-auto flex h-full max-w-screen-xl items-center justify-between py-2 px-1 text-[#ee4d2d]">
+            <div class="flex h-full items-center gap-5">
+                <a class="text-3xl font-medium" href="/">Shoppy</a>
+                <span class="text-xl font-medium text-black">@ViewBag.Title</span>
+            </div>
+            <div>
+                <a href="/">Bạn cần giúp đỡ?</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-[1_1_auto] bg-[#ee4d2d]" style="display: flex; ">
+        <section class="m-auto flex max-w-screen-lg items-center justify-end"
+                 style="
+                    background-image: url('https://cf.shopee.vn/file/5569eb9dc7e09e2dbed5315b8f2ea8ba');
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    width: 100%;
+                    min-height: 600px;
+                ">
+            @RenderBody()
+        </section>
+    </main>
+
+    @Html.Partial("Components/Footer")
+
+    @RenderSection("script", false)
+</body>
+</html>

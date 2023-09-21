@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="89d191bbbeec4f93b4242f1c0b55d24f" Name="Diagram1">
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.Category" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.Customer" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.OrderDetail" Width="1.5" PointX="7.5" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.OrderPro" Width="1.5" PointX="5.25" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.Product" Width="1.5" PointX="5.25" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.Role" Width="1.5" PointX="3.75" PointY="15.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.Seller" Width="1.5" PointX="3" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.User" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.UserClaim" Width="1.5" PointX="3" PointY="9.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.UserLogin" Width="1.5" PointX="3" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeAnNhomDatabaseModel.UserRole" Width="1.5" PointX="6" PointY="12.25" IsExpanded="true" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK_Pro_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK__OrderPro__Custom__3E52440B" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK_User_Customer" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK__OrderDeta__Order__4222D4EF" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK__OrderDeta__Produ__412EB0B6" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK_Pro_User" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK_dbo_UserRoles_dbo_Roles_RoleId" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK_Seller_User" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK_dbo_UserClaims_dbo_User_IdentityUser_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK_dbo_UserLogins_dbo_User_IdentityUser_Id" ManuallyRouted="false" />
+        <AssociationConnector Association="DeAnNhomDatabaseModel.FK_dbo_UserRoles_dbo_User_IdentityUser_Id" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

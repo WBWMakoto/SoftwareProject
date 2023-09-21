@@ -1,0 +1,84 @@
+﻿@using DeAnNhom.Models
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.Owin;
+@using Microsoft.AspNet.Identity.EntityFramework
+
+@model BecomeSellerViewModel
+
+@{
+    ViewBag.Title = "Become Seller";
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+
+    var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+    var roleManager = HttpContext.Current.GetOwinContext().Get<ApplicationRoleManager>();
+
+    var currentUser = userManager.FindById(User.Identity.GetUserId());
+}
+
+<section class="max-w-screen-xl m-auto bg-white shadow-md rounded-md p-3 mt-10">
+    @using (Html.BeginForm("BecomeSeller", "Account", FormMethod.Post, new
+    {
+        @class = "flex flex-col justify-center items-center gap-y-5",
+        enctype = "multipart/form-data",
+        @id = "formBecomeSeller"
+    }))
+    {
+    @Html.AntiForgeryToken()
+    <div class="w-full flex flex-col items-center justify-center gap-2">
+        <img src="@Url.Content(currentUser.ProfileImg)" class="rounded-full w-[150px] h-[150px]" />
+        <span class="text-xl"> @currentUser.Customer.Name </span>
+    </div>
+
+    <div class="flex gap-5 items-center w-[410px]">
+        <div class="w-full">
+            @Html.TextBoxFor(m => m.ShopName, new
+            {
+                @class = "w-full rounded-md border border-gray-400/60 py-2 px-4 placeholder:text-sm placeholder:text-gray-600 focus:outline-none",
+                placeholder = "Tên Shop"
+            })
+            @Html.ValidationMessageFor(m => m.ShopName, null, new { @class = "text-red-600" })
+        </div>
+    </div>
+    <div class="form-control">
+        <label class="label cursor-pointer flex gap-3">
+            <input type="checkbox" class="checkbox checkbox-success" name="Agreed" id="Agreed" value="true" />
+            <span class="label-text"> Đồng ý với <a class="text-[#f6402d] hover:text-[#f6402d]" href="#"> điều khoản dịch vụ </a> </span>
+        </label>
+    </div>
+
+    <div>
+        <button type="submit" class="bg-[#f6402d] py-2 px-6 text-white rounded-md">
+            Trở thành người bán hàng
+        </button>
+    </div>
+
+    <div class="toast z-50" id="toast"> </div>
+    @Html.ValidationSummary(false)
+    }
+</section>
+
+@section script
+{
+    <script>
+        $("#formBecomeSeller").on("submit", (e) => {
+            let isAgreed = $("#Agreed")[0].checked;
+            if (isAgreed) {
+                return true;
+            }
+
+            const errorToast = $("#toast")[0];
+            const divError = document.createElement("div")
+            divError.innerHTML = `
+<div class="alert alert-error bg-red-600 text-white">
+            <div>
+                <span> Bạn cần dồng ý với điều khoản dịch vụ để tiếp tục.</span>
+            </div>
+</div>
+`;
+            errorToast.append(divError);
+            setTimeout(() => errorToast.removeChild(divError), 5000);
+
+            return false;
+        })
+    </script>
+}

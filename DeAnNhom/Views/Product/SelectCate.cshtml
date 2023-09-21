@@ -1,0 +1,11 @@
+﻿@using DeAnNhom.Models
+
+@model IEnumerable<Category>
+
+<select class="select select-sm focus:outline-[#f05d40] text-center" name="CategoryID" id="CategoryID">
+    <option disabled selected>Chọn 1 danh mục cho sản phẩm của bạn</option>
+    @foreach (var cate in Model)
+    {
+        <option value="@cate.CategoryID"> @cate.CategoryName </option>
+    }
+</select>

@@ -1,0 +1,64 @@
+﻿@using DeAnNhom.Models
+@model CreateCategoryViewModel
+
+@{
+    ViewBag.Title = "Create Category";
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+}
+
+<section class="max-w-screen-xl w-max text-black m-auto pt-5 flex flex-none gap-5">
+    <div class="w-full flex-none bg-white shadow-lg rounded-md py-5 px-6">
+        <div id="top-head" class="py-5 px-6 w-full text-center">
+            <h4 class="text-4xl font-semibold"> Tạo danh mục mới </h4>
+        </div>
+
+        @using (Html.BeginForm("CreateCategory", "Admin", FormMethod.Post, new { @class = "flex flex-col justify-center items-center gap-5", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <input type="file" id="CategoryImage" name="CategoryImage" onchange="changeImg(this)" class="hidden" />
+            <button type="button" class="flex items-center justify-center w-[150px] h-[150px]" id="UploadImgBtn">
+                <img src="https://via.placeholder.com/150" loading="lazy" height="150" width="150" id="UploadImgHolder" class="object-contain rounded-md" />
+            </button>
+
+            <div class="flex items-center justify-between gap-5">
+                <label for="CategoryName" class="text-xl"> Tên danh mục:  </label>
+                <input name="CategoryName" type="text" class="w-72 border border-gray-500/60 px-4 py-2 rounded-lg focus:outline-none focus:border-[#f6412d]" />
+            </div>
+
+            @Html.ValidationSummary()
+
+            <div class="flex flex-col gap-2">
+                <button type="submit" class="bg-[#f05d40] text-white py-3 px-4 rounded-md">
+                    Tạo danh sách
+                </button>
+
+                @if (ViewBag.IsSuccess != null)
+                {
+                    <span class="text-green-600 text-sm"> Tạo danh sách thành công </span>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@section script
+{
+    <script>
+        const changeImg = (self) => {
+            let reader = new FileReader();
+            if (self.files && self.files[0]) {
+
+                reader.onload = (e) => {
+                    $("#UploadImgHolder").attr("src", e.target.result);
+                }
+
+                reader.readAsDataURL(self.files[0]);
+            };
+        };
+
+        $("#UploadImgBtn").on("click", () => {
+            document.querySelector("input#CategoryImage").click();
+        })
+    </script>
+}

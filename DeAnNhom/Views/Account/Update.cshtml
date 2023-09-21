@@ -1,0 +1,69 @@
+﻿@model DeAnNhom.Models.UpdateInfoViewModel
+
+@{
+    ViewBag.Title = "Update " + ViewBag.Update;
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+}
+
+<section class="max-w-screen-xl w-full text-black mx-auto pt-5 flex flex-auto gap-5">
+    @{ Html.RenderAction("SideBar"); }
+
+    <div class="w-full flex-auto bg-white shadow-lg rounded-md">
+        <div id="top-head" class="py-5 px-6 border-b-[1px] border-b-gray-500/40">
+            <h4 class="text-xl font-semibold"> @ViewBag.Title </h4>
+        </div>
+
+        @using (Html.BeginForm("Update", "Account", null, FormMethod.Post, new
+        {
+            @class = "text-black py-5 px-6 w-full flex gap-5",
+            role = "form",
+            enctype = "multipart/form-data"
+        }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="w-full w-[700px] flex flex-col gap-10">
+                <section class="flex items-center justify-between gap-10">
+                    @if (ViewBag.Update == "Email")
+                    {
+                        @Html.LabelFor(m => m.NewEmail, new { })
+                        @Html.TextBoxFor(m => m.NewEmail, new { @class = "w-96 border border-[#f7422e] rounded-md px-4 py-2 focus:outline-none" })
+                    }
+                    else if (ViewBag.Update == "Phone")
+                    {
+                        @Html.LabelFor(m => m.NewPhone, new { })
+                        @Html.TextBoxFor(m => m.NewPhone, new { @class = "w-96 border border-[#f7422e] rounded-md px-4 py-2 focus:outline-none" })
+                    }
+                    else if (ViewBag.Update == "Password")
+                    {
+                        @Html.LabelFor(m => m.NewPassword, new { })
+                        @Html.PasswordFor(m => m.NewPassword, new
+                        {
+                            @class = "w-96 border border-[#f7422e] rounded-md px-4 py-2 focus:outline-none",
+                            type = "password"
+                        })
+                    }
+                </section>
+
+                <section class="flex flex-col gap-5">
+                    <div class="flex items-center justify-between">
+                        @Html.LabelFor(m => m.CurrentPassword, new { })
+                        @Html.PasswordFor(m => m.CurrentPassword, new { @class = "w-96 border border-[#f7422e] rounded-md px-4 py-2 focus:outline-none" })
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        @Html.LabelFor(m => m.ConfirmPassword, new { })
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "w-96 border border-[#f7422e] rounded-md px-4 py-2 focus:outline-none" })
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div></div>
+                        <button class="bg-[#f7422e] text-white py-3 px-10 rounded-md" type="submit">
+                            Lưu
+                        </button>
+                    </div>
+                </section>
+            </div>
+        }
+    </div>
+</section>

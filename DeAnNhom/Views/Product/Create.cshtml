@@ -1,0 +1,214 @@
+﻿@using DeAnNhom.Models
+@model ProductCreateViewModel
+
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+
+    var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+    ApplicationUser currentUser = manager.FindById(User.Identity.GetUserId());
+}
+
+@using (Html.BeginForm("Create", "Product", null, FormMethod.Post, new
+{
+    @class = "mx-auto h-max max-w-screen-xl w-full flex flex-col gap-5",
+    role = "form",
+    enctype = "multipart/form-data"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input name="SellerID" id="SellerID" value="@currentUser.Id" class="hidden" />
+
+    <section class="mt-5 p-4 text-black bg-white rounded-md shadow-lg flex gap-10">
+        <div id="productImg" class="overflow-hidden h-max">
+            <input type="file" id="UploadImg" name="UploadImg" onchange="changeImg(this)" class="hidden" />
+            <button type="button" class="flex items-center justify-center w-[450px] h-[450px]" id="UploadImgBtn">
+                <img src="https://via.placeholder.com/450" loading="lazy" height="450" width="450" id="UploadImgHolder" class="object-contain rounded-md" />
+            </button>
+        </div>
+
+        <div id="productInfo" class="min-h-[450px] flex-1 pr-4">
+            <div class="flex flex-col justify-between gap-3 h-full">
+                <div class="flex flex-col gap-5 w-full h-full">
+                    @Html.TextBoxFor(m => m.ProductName, new { @class = "w-full py-2 px-3 border rounded-md focus:outline-none", placeholder = "Nhập tên sản phẩm" })
+
+                    <span class="relative text-[#f7442e] bg-[#fafafa] px-5">
+                        <span class="absolute top-0 text-xl underline">đ</span>
+                        @Html.EditorFor(m => m.ProductPrice, new
+                        {
+                           htmlAttributes = new
+                           {
+                                @class = "w-[200px] align-top text-4xl pl-4 rounded-md focus:outline-none placeholder:text-[#f7442e]",
+                                @min = "0",
+                                @step = "any",
+                                @type = "text",
+                                placeholder = "Nhập giá"
+                           }
+                       })
+                    </span>
+
+                    <div class="px-5 text-gray-500 min-h-[50px] flex">
+                        @Html.LabelFor(m => m.CategoryID, new { @class = "w-[120px] block" })
+                        <div class="flex items-start justify-start flex-col w-full gap-3">
+                            @{ Html.RenderAction("SelectCate"); }
+                        </div>
+                    </div>
+
+                    <div class="px-5 text-gray-500 min-h-[50px] flex">
+                        @Html.LabelFor(m => m.ProductSizes, new { @class = "w-[120px] block" })
+                        <div class="flex items-start justify-start flex-col w-full gap-3">
+                            @Html.TextBoxFor(m => m.ProductSizes, null, new { @class = "hidden" })
+                            <ul id="productSize" class="text-black flex items-center justify-start gap-x-2 gap-y-3 min-h-[30px] flex-wrap">
+                                <li>
+                                    <input type="text" class="focus:outline-none w-[100px] h-max border rounded-md border-gray-300 px-2 py-1 text-center" id="inputSize" />
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="px-5 text-gray-500 min-h-[50px] flex">
+                        @Html.LabelFor(m => m.Quantity, new { @class = "w-[120px] block" })
+                        <div>
+                            <div class="border border-gray-300 flex items-center justify-center">
+                                <button onclick="decreaseAmount()" type="button" class="text-center w-8 h-8 border-r-[1px] border-gray-300"> <i class="fa-solid fa-minus"></i> </button>
+                                @Html.TextBoxFor(m => m.Quantity, null, new { @class = "w-[60px] h-8 focus:outline-none text-center", @Value = 1 })
+                                <button onclick="increaseAmount()" type="button" class="text-center w-8 h-8 border-l-[1px] border-gray-300"> <i class="fa-solid fa-plus"></i> </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    @Html.ValidationSummary("", new { @class = "[&_ul]:list-disc text-red-500" })
+                </div>
+                <div>
+                    <button type="submit" class="bg-[#f05d40] text-white py-3 px-4 rounded-md">
+                        Tạo sản phẩm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="p-4 text-black bg-white rounded-md shadow-lg">
+        <div class="w-full bg-[#fafafa] pb-6">
+            @Html.LabelFor(m => m.ProductDescription, new { @class = "text-2xl" })
+        </div>
+        <div class="w-full">
+            @Html.EditorFor(m => m.ProductDescription, new
+            {
+                htmlAttributes = new
+                {
+                    @class = "w-full border border-gray-300 focus:outline-none py-2 px-3 rounded-md h-4 resize-none"
+                }
+            })
+        </div>
+    </section>
+}
+
+@section script
+{
+    <script>
+        let allSize = [];
+
+        const changeImg = (self) => {
+            let reader = new FileReader();
+            if (self.files && self.files[0]) {
+
+                reader.onload = (e) => {
+                    $("#UploadImgHolder").attr("src", e.target.result);
+                }
+
+                reader.readAsDataURL(self.files[0]);
+            };
+        };
+
+        const removeSize = (size) => {
+            allSize = allSize.filter((v) => v != size);
+
+            $(`li[data-size="${size}"]`).remove()
+            $("#ProductSizes").attr("value", allSize.join(";"));
+        }
+
+        $("textarea").each(function () {
+            this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+        }).on("input", function () {
+            this.style.height = 0;
+            this.style.height = (this.scrollHeight) + "px";
+        });
+
+        $("#inputSize").on("keypress", (e) => {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+
+                const size = e.target.value.toUpperCase();
+                if (size.length === 0) return;
+                if (allSize.some((v) => v == size)) return;
+
+                allSize.push(size);
+                const li = document.createElement("li");
+                li.innerHTML = `<button class="rounded-md py-1 px-6 border border-gray-300 uppercase hover:bg-red-600/50 hover:text-white hover:border-red-300" type="button" onclick="removeSize('${size}')"> ${size} </button>`
+
+                li.className = "indicator h-[34px] flex items-center";
+                li.setAttribute("data-size", size);
+
+                $("#productSize").prepend(li);
+                $("#ProductSizes").attr("value", allSize.join(";"));
+                $("#inputSize")[0].value = ""
+            }
+        })
+
+        $("#UploadImgBtn").click(() => {
+            document.querySelector("input#UploadImg").click();
+        });
+
+        const decreaseAmount = () => {
+            let newValue = (+$("#Quantity")[0].value) - 1;
+
+            if (newValue <= 0) {
+                newValue = 1;
+            }
+
+            $("#Quantity")[0].value = newValue;
+        }
+
+        const increaseAmount = () => {
+            $("#Quantity")[0].value = (+$("#Quantity")[0].value) + 1;
+        }
+
+        (function ($) {
+            $.fn.inputFilter = function (callback) {
+                return this.on("input keydown keyup mousedown mouseup select contextmenu drop focusout", function (e) {
+                    if (callback(this.value)) {
+                        // Accepted value
+                        if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                            $(this).removeClass("input-error");
+                            this.setCustomValidity("");
+                        }
+                        this.oldValue = this.value;
+                        this.oldSelectionStart = this.selectionStart;
+                        this.oldSelectionEnd = this.selectionEnd;
+                    }
+                    else if (this.hasOwnProperty("oldValue")) {
+                        // Rejected value - restore the previous one
+                        $(this).addClass("input-error");
+                        this.reportValidity();
+                        this.value = this.oldValue;
+                        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                    }
+                    else {
+                        // Rejected value - nothing to restore
+                        this.value = "";
+                    }
+                });
+            };
+        }(jQuery));
+
+        $(document).ready(function () {
+            $("#Quantity").inputFilter(function (value) {
+                return /^\d*$/.test(value);    // Allow digits only, using a RegExp
+            });
+        });
+    </script>
+}

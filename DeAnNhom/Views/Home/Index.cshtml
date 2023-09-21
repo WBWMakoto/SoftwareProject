@@ -1,0 +1,75 @@
+﻿@using System.Globalization;
+@model IEnumerable<DeAnNhom.Models.Product>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@Html.Action("Ads")
+
+@Html.Action("Categories")
+
+<section id="today-choice" class="m-auto w-full h-max max-w-screen-xl pt-5 text-black">
+    <div class="w-full border-b-4 border-[#fe6132] bg-white py-3 text-center text-xl text-[#fe6132]">Gợi ý hôm nay</div>
+
+    <div class="grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-3 gap-y-5 px-2 py-5">
+        @foreach (var item in Model)
+        {
+            <div class="w-full flex items-center justify-center">
+                <div class="w-48 rounded-lg bg-white shadow-lg h-[284px] overflow-hidden hover:scale-105 transition-transform duration-300">
+                    <a class="h-full" href="@Url.Action("Details", "Product", new { name = item.ProductID })">
+                        <img src="@Url.Content(item.ProductImage)" class="w-full h-[192px]" loading="lazy" />
+                        <div class="flex flex-col justify-between h-[92px] gap-2 p-2">
+                            <div class="h-max overflow-hidden text-sm"
+                                 style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">
+                                @item.ProductName
+                            </div>
+
+                            <div class="flex w-full items-center justify-between">
+                                <span class="text-lg text-[#fe6132]">@item.Price.ToString("C0", CultureInfo.CreateSpecificCulture("vn-vn"))</span>
+                                <span class="text-sm text-gray-500/60">Đã bán @item.Sold</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+        }
+    </div>
+
+    <div class="flex w-full items-center justify-center">
+        <a class="w-96 bg-white py-2 text-center shadow-lg rounded-md hover:scale-105 transition-transform duration-300" href="@Url.Action("Index", "Product", new { page = 2 })">Xem thêm</a>
+    </div>
+</section>
+
+@section script
+{
+    <script>
+        let currentAdsIndex = 0;
+        let i = setInterval(() => next(), 2000);
+
+        const resetInterval = () => {
+            clearInterval(i);
+
+            i = setInterval(() => next(), 2000);
+        };
+
+        const next = () => {
+            const AdsList = document.querySelector("div#carousel-ads ul");
+
+            currentAdsIndex = currentAdsIndex + 1 === AdsList.children.length ? 0 : currentAdsIndex + 1;
+            AdsList.style = `transform: translateX(-${853.33 * currentAdsIndex}px) translateX(0px);`;
+
+            resetInterval();
+        };
+
+        const previous = () => {
+            const AdsList = document.querySelector("div#carousel-ads ul");
+
+            currentAdsIndex = currentAdsIndex - 1 < 0 ? AdsList.children.length - 1 : currentAdsIndex - 1;
+            AdsList.style = `transform: translateX(-${853.33 * currentAdsIndex}px) translateX(0px);`;
+
+            resetInterval();
+        };
+    </script>
+}

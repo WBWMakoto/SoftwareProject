@@ -1,0 +1,184 @@
+﻿@using DeAnNhom.Models;
+@using System.Globalization
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.Owin;
+
+@model ProductPage
+
+@{
+    ViewBag.Title = "Product";
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+
+    var rnd = new Random();
+    var seller = new ApplicationUser();
+    string sellerID = Request.QueryString["sellerID"];
+
+    if (sellerID != null)
+    {
+        var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        seller = userManager.FindById(sellerID);
+    }
+
+    object getRouteParams(int page)
+    {
+        return new
+        {
+            page = page,
+            sellerID = sellerID,
+            category = Request.QueryString["category"],
+            name = Request.QueryString["name"],
+            max = Request.QueryString["max"],
+            min = Request.QueryString["min"]
+        };
+    }
+}
+
+<section class="m-auto h-max max-w-screen-xl pt-5 text-black flex flex-col gap-5">
+    @if (Request.QueryString["sellerID"] != null)
+    {
+        <div class="p-4 text-black bg-white rounded-md shadow-lg flex justify-between items-center">
+            <div class="flex gap-5">
+                <img src="@Url.Content(seller.ProfileImg)"
+                     class="w-[78px] h-[78px] rounded-full border border-[#f7412d]" />
+                <div class="flex flex-col justify-between">
+                    <span> @(seller.Seller.ShopName == "" ? seller.Customer.Name : seller.Seller.ShopName)</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 grid-rows-2 h-full w-max gap-x-10 gap-y-2">
+                <div>
+                    <span class="text-[#f6402d]"> Joined Date: </span>
+                    <span id="joinedDate"> </span>
+                </div>
+                <div>
+                    <span class="text-[#f6402d]"> Products: </span>
+                    @Html.Action("TotalProduct", new { sellerID = seller.Id })
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-6 gap-3 gap-y-5 px-2">
+            <h2 class="text-gray-500/60 col-span-6 text-xl font-semibold"> Sản phẩm bán chạy </h2>
+
+            @foreach (var item in Model.ListProduct.OrderByDescending(p => p.Sold).Take(6).OrderByDescending(p => rnd.Next()))
+            {
+                <div class="w-48 rounded-lg bg-white shadow-lg h-[284px] overflow-hidden hover:scale-105 transition-transform duration-300">
+                    <a class="h-full" href="@Url.Action("Details", "Product", new { name = item.ProductID })">
+                        <img src="@Url.Content(item.ProductImage)" class="w-[192px] h-[192px]" loading="lazy" />
+                        <div class="flex flex-col justify-between h-[92px] gap-2 p-2">
+                            <div class="h-max overflow-hidden text-sm"
+                                 style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">
+                                @item.ProductName
+                            </div>
+
+                            <div class="flex w-full items-center justify-between">
+                                <span class="text-lg text-[#fe6132]">@item.Price.ToString("C0", CultureInfo.CreateSpecificCulture("vn-vn"))</span>
+                                <span class="text-sm text-gray-500/60">Đã bán @item.Sold</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+
+        <div class="grid grid-cols-6 gap-3 gap-y-5 px-2">
+            <h2 class="text-gray-500/60 col-span-6 text-xl font-semibold"> Sản phẩm mới </h2>
+
+            @foreach (var item in Model.ListProduct.OrderByDescending(p => p.CreatedAt).Take(6))
+            {
+                <div class="w-48 rounded-lg bg-white shadow-lg h-[284px] overflow-hidden hover:scale-105 transition-transform duration-300">
+                    <a class="h-full" href="@Url.Action("Details", "Product", new { name = item.ProductID })">
+                        <img src="@Url.Content(item.ProductImage)" class="w-[192px] h-[192px]" loading="lazy" />
+                        <div class="flex flex-col justify-between h-[92px] gap-2 p-2">
+                            <div class="h-max overflow-hidden text-sm"
+                                 style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">
+                                @item.ProductName
+                            </div>
+
+                            <div class="flex w-full items-center justify-between">
+                                <span class="text-lg text-[#fe6132]">@item.Price.ToString("C0", CultureInfo.CreateSpecificCulture("vn-vn"))</span>
+                                <span class="text-sm text-gray-500/60">Đã bán @item.Sold</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="grid grid-cols-6 gap-3 gap-y-5 px-2 pb-5">
+        <h2 class="text-gray-500/60 col-span-6 text-xl font-semibold"> Tất cả các sản phẩm </h2>
+
+        @foreach (var item in Model.PageProduct.OrderByDescending(p => rnd.Next()))
+        {
+            <div class="w-48 rounded-lg bg-white shadow-lg h-[284px] overflow-hidden hover:scale-105 transition-transform duration-300">
+                <a class="h-full" href="@Url.Action("Details", "Product", new { name = item.ProductID })">
+                    <img src="@Url.Content(item.ProductImage)" class="w-[192px] h-[192px]" loading="lazy" />
+                    <div class="flex flex-col justify-between h-[92px] gap-2 p-2">
+                        <div class="h-max overflow-hidden text-sm"
+                             style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">
+                            @item.ProductName
+                        </div>
+
+                        <div class="flex w-full items-center justify-between">
+                            <span class="text-lg text-[#fe6132]">@item.Price.ToString("C0", CultureInfo.CreateSpecificCulture("vn-vn"))</span>
+                            <span class="text-sm text-gray-500/60">Đã bán @item.Sold</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="m-auto h-max max-w-screen-xl pt-5 text-black flex items-center justify-center">
+    <div class="w-max flex gap-3 bg-white shadow-lg py-3 px-6 rounded-md">
+        <a href="@Url.Action("Index", getRouteParams(1))"
+           class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageProduct.PageNumber <= 2 ? "btn-disabled" : "")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+            </svg>
+        </a>
+        <a href="@Url.Action("Index", getRouteParams(Model.PageProduct.PageNumber - 1))"
+           class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageProduct.PageNumber <= 1 ? "btn-disabled" : "")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+            </svg>
+        </a>
+
+        @for (int i = 1; i <= Model.PageProduct.PageCount; i++)
+        {
+            <a href="@Url.Action("Index", getRouteParams(i))"
+               class="btn btn-ghost transition-color @( Model.PageProduct.PageNumber == i ? "bg-[#f6402d] text-white hover:bg-[#f6402d]" : "hover:bg-[#fd6133] hover:text-white" )">
+                @i
+            </a>
+        }
+
+        <a href="@Url.Action("Index", getRouteParams(Model.PageProduct.PageNumber + 1))"
+           class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageProduct.PageNumber + 1 > Model.PageProduct.PageCount ? "btn-disabled" : "")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+            </svg>
+        </a>
+        <a href="@Url.Action("Index", getRouteParams(Model.PageProduct.PageCount))"
+           class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageProduct.PageNumber + 2 > Model.PageProduct.PageCount ? "btn-disabled" : "")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z" />
+                <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z" />
+            </svg>
+        </a>
+    </div>
+</section>
+
+@section script
+{
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/relativeTime.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
+    <script>
+        dayjs.extend(window.dayjs_plugin_relativeTime);
+        dayjs.extend(window.dayjs_plugin_customParseFormat);
+
+        $("#joinedDate")[0].innerText = dayjs("@seller.JoinedDate.ToString("dd-MM-yyyy HH:mm:ss")", "DD-MM-YYYY HH:mm:ss").fromNow();
+    </script>
+}
