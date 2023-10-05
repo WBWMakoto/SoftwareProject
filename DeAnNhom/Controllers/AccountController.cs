@@ -293,8 +293,13 @@ namespace DeAnNhom.Controllers
                 db.Sellers.Add(new Seller { SellerID = user.Id, ShopName = model.ShopName });
                 UserManager.AddToRole(user.Id, "Seller");
 
+                // Manually update the user's claims to reflect the updated roles
+                var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+                AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, identity);
+
                 await db.SaveChangesAsync();
 
+               
                 return RedirectToAction("Index", "Home");
             }
             return View(model);

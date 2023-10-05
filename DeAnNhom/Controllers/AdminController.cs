@@ -1,11 +1,15 @@
 ﻿using DeAnNhom.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+
 
 namespace DeAnNhom.Controllers
 {
@@ -71,13 +75,16 @@ namespace DeAnNhom.Controllers
                 return HttpContext.GetOwinContext().Authentication;
             }
         }
-
+        /*WTF logic here Need customer with these condition to become Admin (but it is broken LOL)
+         * 
+         * LOCK ALL OLD ERROR LOGICS
+         * 
         [Authorize(Roles = "Customer")]
         public async Task<ActionResult> BecomeAdmin()
         {
             var user = UserManager.FindById(User.Identity.GetUserId());
 
-            if (user.Email.ToLower() == "admin69@admin.com" || user.Email.ToLower() == "admin@admin.com")
+            if (user.Email.ToLower() == "admin6969@gmail.com" || user.Email.ToLower() == "admin@admin.com")
             {
                 db.Sellers.Add(new Seller { SellerID = user.Id, ShopName = user.Customer.Name });
 
@@ -90,10 +97,27 @@ namespace DeAnNhom.Controllers
             }
             return RedirectToAction("Unauthorization", "Errors");
         }
+        */
 
+
+
+
+
+            /*BackUP accounts 
+             1. Admin account
+             Email: adminmakoto@gmail.com
+             Password: Letbringg1oryto@nime
+
+             2. Test account
+             Email: beater@gmail.com (it actually Kirio nickname named by low-level playerbase LOL)
+             Password: No1canbe@tKirito
+            */
         [Authorize(Roles = "Admin")]
         public ActionResult CreateCategory()
         {
+
+       
+
             return View();
         }
 

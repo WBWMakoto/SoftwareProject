@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace DeAnNhom.Controllers
 {
@@ -132,6 +133,12 @@ namespace DeAnNhom.Controllers
                 }
 
                 await db.SaveChangesAsync();
+
+
+
+
+
+
 
                 return RedirectToAction("Details", new { name = p.ProductID });
             }
