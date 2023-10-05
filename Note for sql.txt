@@ -1,0 +1,29 @@
+-- Look at examples for multiple size and description underline logic (search SET IDENTITY_INSERT [dbo].[Product] ON in SQL file)
+
+-- Image store logic, need careful with the sync process
+-- INSERT [dbo].[Product] ([ProductID], [ProductName], [Decription], [Price], [Sizes], [Quantity], [ProductImage], [Sold], [CreatedAt], [CategoryID], [SellerID]) VALUES (24, N'86-EIGHTY SIX- Ep.7 - Tặng Kèm Phong Bì + Postcard Giấy Có Đế Dựng', N'Kiêu hãnh chiến đấu, rồi hi sinh. Số phận của Tám Sáu là vậy. Lòng ham sống đã bị họ bỏ lại ở quá khứ rất xa...', CAST(120000.00 AS Decimal(18, 2)), N'Vừa', 498, N'~/Content/Images/Product/1.jpg', 102, CAST(N'2022-05-05T00:00:00.000' AS DateTime), N'3                   ', N'eb340ea9-434e-46f2-a143-0c52dd602734')
+
+FULL ADVANCED EXAMPLE (TRY TO FOLLOW THIS METHOD)
+*NOTE FOR GROUP WORK, IMAGE SHOULD BE THE INTERNET IMAGE LINK
+
+INSERT [dbo].[Product] ([ProductID], [ProductName], [Decription], [Price], [Sizes], [Quantity], [ProductImage], [Sold], [CreatedAt], [CategoryID], [SellerID]) VALUES (24, N'Samsung Galaxy S23 Ultra ', N'THÔNG TIN SẢN PHẨM:
+Samsung Galaxy S23 Ultra là chiếc smartphone cao cấp nhất của nhà Samsung, sở hữu cấu hình không tưởng với con chip khủng được Qualcomm tối ưu riêng cho dòng Galaxy và camera lên đến 200 MP, xứng danh là chiếc flagship Android được mong đợi nhất trong năm 2023.
+
+Tuy nhiên kiểu bo cong này sẽ hơi thiên hướng phẳng một chút so với S22 Ultra, điều này mang đến cho mình trải nghiệm cầm nắm chắc tay hơn, song cũng mang lại cảm giác dễ chịu cho những lúc sử dụng liên tục trong thời gian dài.
+
+Về màu sắc, năm nay Samsung cũng đã cho ra các phiên bản màu như: Tím, kem, xanh và đen. Nhìn chung thì đây là những màu sắc cực kỳ sang trọng và lịch lãm, phù hợp cho các bạn trẻ năng động, mạnh mẽ và đặc biệt là những khách hàng đang là doanh nhân bởi ngoại hình đẳng cấp và thanh lịch.
+
+Hiện trên tay mình là bản màu xanh đặc trưng của Samsung, màu này vừa đem đến sự trẻ trung tươi mới và cũng vừa mang trên mình một gam màu tối để có thể giữ được vẻ huyền bí đầy mê hoặc.
+
+THÔNG SỐ SẢN PHẨM:
+Kích thước: 163.4 x 78.1 x 8.9 mm
+Trọng lượng: 233g
+Màn hình: Dynamic AMOLED 2X 6.8 inch
+Tần số quét: 120Hz
+Camera trước: 12MP
+Camera sau: 200MP + 10MP +12MP
+Chip xử lý: Snapdragon 8 Gen 2
+RAM: 8GB/16GB
+Bộ nhớ trong: 1TB/512GB/256GB
+Dung lượng pin: 5000 mAh
+Công nghệ sạc: Có dây 45W, không dây 15W, không dây ngược 4.5W', CAST(24000000.00 AS Decimal(18, 2)), N'TIÊU CHUẨN;VỪA', 100069, N'~/Content/Images/Product/638321511143681889_aa00d4d7-a4f6-43d7-a752-14fa728e6014.jpg', 0, CAST(N'2023-10-06T01:05:14.347' AS DateTime), N'4                   ', N'c6a15dfa-9051-41da-bf69-233018d7db87')

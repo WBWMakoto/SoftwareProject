@@ -267,6 +267,7 @@ namespace DeAnNhom.Controllers
             return View();
         }
 
+
         //
         // GET: /Account/BecomeSeller
         public ActionResult BecomeSeller()

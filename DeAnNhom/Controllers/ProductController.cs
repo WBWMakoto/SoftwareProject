@@ -123,14 +123,16 @@ namespace DeAnNhom.Controllers
 
                 if (model.UploadImg != null)
                 {
-                    string fileName = p.ProductID.ToString();
-                    string extent = Path.GetExtension(model.UploadImg.FileName);
+                    string originalFileName = Path.GetFileNameWithoutExtension(model.UploadImg.FileName);
+                    string fileExtension = Path.GetExtension(model.UploadImg.FileName);
 
-                    fileName = Guid.NewGuid().ToString() + extent; // Tạo một tên duy nhất để tránh việc lưu đè
+                    // Tạo một tên file duy nhất bằng cách sử dụng thời gian và một phần ngẫu nhiên
+                    string uniqueFileName = $"{DateTime.Now.Ticks}_{Guid.NewGuid()}{fileExtension}";
 
-                    model.UploadImg.SaveAs(Path.Combine(Server.MapPath("~/Content/Images/Product"), fileName));
-                    p.ProductImage = $"~/Content/Images/Product/{fileName}";
+                    model.UploadImg.SaveAs(Path.Combine(Server.MapPath("~/Content/Images/Product"), uniqueFileName));
+                    p.ProductImage = $"~/Content/Images/Product/{uniqueFileName}";
                 }
+
 
                 await db.SaveChangesAsync();
 
