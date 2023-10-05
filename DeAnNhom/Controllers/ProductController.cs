@@ -126,7 +126,7 @@ namespace DeAnNhom.Controllers
                     string fileName = p.ProductID.ToString();
                     string extent = Path.GetExtension(model.UploadImg.FileName);
 
-                    fileName += extent;
+                    fileName = Guid.NewGuid().ToString() + extent; // Tạo một tên duy nhất để tránh việc lưu đè
 
                     model.UploadImg.SaveAs(Path.Combine(Server.MapPath("~/Content/Images/Product"), fileName));
                     p.ProductImage = $"~/Content/Images/Product/{fileName}";
@@ -163,7 +163,7 @@ namespace DeAnNhom.Controllers
                     Decription = $"Product {i} description",
                     Sizes = "S;M;L;XL;XXL",
                     SellerID = UserManager.FindById(User.Identity.GetUserId()).Id,
-                    ProductImage = $"~/Content/Images/Product/{rnd.Next(1, 8)}.jpg",
+                    ProductImage = $"~/Content/Images/Product/{rnd.Next(1, 100)}.jpg",
                     CreatedAt = DateTime.Now,
                     CategoryID = "Test",
                 };
