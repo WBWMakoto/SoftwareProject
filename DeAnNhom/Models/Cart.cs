@@ -46,8 +46,15 @@ namespace DeAnNhom.Models
         {
             var total = items.Sum(s => s._quantity * s._product.Price);
 
-            return (decimal)(total);
+            // Apply a discount if the total exceeds 1,000,000
+            if (total > 1000000)
+            {
+                return total * 0.95M; // Apply a 5% discount
+            }
+
+            return total;
         }
+
 
         public void UpdateQuantity(int id, int _newQuan, string _size)
         {

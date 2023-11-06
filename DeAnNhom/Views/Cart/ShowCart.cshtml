@@ -90,13 +90,25 @@
             </div>
         }
     </section>
-
+    @* Methoad discount 5% already counted in method *@
     @if (Model.Items.Count() > 0)
     {
         <section class="bg-white shadow-lg h-[64px] py-3 px-10 flex justify-end items-center gap-5 rounded-md" id="showTotal">
             <div class="flex items-center gap-3">
-                <span> Tổng thanh toán (@Model.Items.Count() Sản phẩm): </span>
-                <span class="text-[#ee4d2d] text-2xl font-semibold"> @FormatPrice(Model.TotalMoney()) </span>
+                @if (Model.TotalMoney() > 1000000)
+                {
+                    <span class="text-green-500"> Tổng thanh toán (@Model.Items.Count() Sản phẩm) đã được áp dụng voucher (giảm 5% với hóa đơn > 1.000.000 VNĐ):</span>
+                    <span class="text-[#ee4d2d] text-2xl font-semibold">
+                        @FormatPrice(Model.TotalMoney())
+                    </span>
+                }
+                else
+                {
+                    <span class="text-green-500"> Tổng thanh toán (@Model.Items.Count() Sản phẩm) không được áp dụng voucher nào:</span>
+                    <span class="text-[#ee4d2d] text-2xl font-semibold">
+                        @FormatPrice(Model.TotalMoney())
+                    </span>
+                }
             </div>
             <a class="bg-[#ee4d2d] text-center w-[200px] py-2 text-white rounded-md shadow-lg" href="@Url.Action("Checkout")">
                 Mua hàng

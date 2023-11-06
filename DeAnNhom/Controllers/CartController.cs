@@ -19,11 +19,29 @@ namespace DeAnNhom.Controllers
         public ActionResult ShowCart()
         {
             Cart _cart = GetCart();
+            decimal totalPrice = _cart.TotalMoney();
+
+            // Apply discount
+            decimal discountedPrice = ApplyDiscount(totalPrice);
+
+            ViewBag.TotalPrice = totalPrice;
+            ViewBag.DiscountedPrice = discountedPrice;
 
             return View(_cart);
         }
 
-        public ActionResult CheckOut()
+        private decimal ApplyDiscount(decimal totalPrice)
+        {
+            if (totalPrice > 1000000)
+            {
+                // Apply a 5% discount
+                return totalPrice * 0.95M;
+            }
+            return totalPrice;
+        }
+    
+
+    public ActionResult CheckOut()
         {
             if (!Request.IsAuthenticated)
             {
