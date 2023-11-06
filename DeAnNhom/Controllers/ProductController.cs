@@ -68,8 +68,16 @@ namespace DeAnNhom.Controllers
 
             list = list.OrderBy(p => p.ProductID);
 
-            return View(new ProductPage { PageProduct = list.ToPagedList(PageNum, PageSize), ListProduct = list.ToList() });
+            var model = new ProductPage
+            {
+                PageProduct = list.ToPagedList(PageNum, PageSize),
+                ListProduct = list.ToList(),
+                Db = db  // Pass the db object to the view
+            };
+
+            return View(model);
         }
+
 
         [AllowAnonymous]
         public ActionResult Details(int name)

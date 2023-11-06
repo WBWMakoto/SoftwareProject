@@ -58,6 +58,7 @@ namespace DeAnNhom.Models
     {
         public PagedList.IPagedList<Product> PageProduct { get; set; }
         public List<Product> ListProduct { get; set; }
+        public DeAnNhomDatabaseEntities Db { get; set; }
     }
 
     public class CreateCategoryViewModel

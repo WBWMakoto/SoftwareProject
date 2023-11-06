@@ -44,7 +44,7 @@
                     <span> @(seller.Seller.ShopName == "" ? seller.Customer.Name : seller.Seller.ShopName)</span>
                 </div>
             </div>
-            <div class="grid grid-cols-2 grid-rows-2 h-full w-max gap-x-10 gap-y-2">
+            <div class="grid grid-cols-3 h-full w-max gap-x-10 gap-y-2">
                 <div>
                     <span class="text-[#f6402d]"> Joined Date: </span>
                     <span id="joinedDate"> </span>
@@ -53,8 +53,31 @@
                     <span class="text-[#f6402d]"> Products: </span>
                     @Html.Action("TotalProduct", new { sellerID = seller.Id })
                 </div>
+
+
+                <div>
+                    <span class="text-[#f6402d]"> Revenue: </span>
+                    @{
+                        var sellerData = Model.Db.Products
+                            .Where(p => p.SellerID == sellerID)
+                            .GroupBy(p => p.SellerID)
+                            .Select(g => new
+                            {
+                                Count = g.Count(),
+                                Revenue = g.Sum(p => p.Price * p.Sold)
+                            })
+                            .FirstOrDefault();
+
+                        decimal defaultRevenue = 15000000; // Giá trị mặc định
+                        decimal revenueToShow = sellerData != null ? sellerData.Revenue : defaultRevenue;
+
+                        <span>@string.Format(CultureInfo.CreateSpecificCulture("vn-vn"), "{0:C0}", revenueToShow)</span>
+                    }
+                </div>
             </div>
         </div>
+
+
 
         <div class="grid grid-cols-6 gap-3 gap-y-5 px-2">
             <h2 class="text-gray-500/60 col-span-6 text-xl font-semibold"> Sản phẩm bán chạy </h2>
@@ -86,7 +109,7 @@
             @foreach (var item in Model.ListProduct.OrderByDescending(p => p.CreatedAt).Take(6))
             {
                 <div class="w-48 rounded-lg bg-white shadow-lg h-[284px] overflow-hidden hover:scale-105 transition-transform duration-300">
-                    <a class="h-full" href="@Url.Action("Details", "Product", new { name = item.ProductID })">
+                    <a class "h-full" href="@Url.Action("Details", "Product", new { name = item.ProductID })">
                         <img src="@Url.Content(item.ProductImage)" class="w-[192px] h-[192px]" loading="lazy" />
                         <div class="flex flex-col justify-between h-[92px] gap-2 p-2">
                             <div class="h-max overflow-hidden text-sm"
@@ -141,7 +164,7 @@
         </a>
         <a href="@Url.Action("Index", getRouteParams(Model.PageProduct.PageNumber - 1))"
            class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageProduct.PageNumber <= 1 ? "btn-disabled" : "")">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+            <svg xmlns="http://w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
             </svg>
         </a>
@@ -149,19 +172,19 @@
         @for (int i = 1; i <= Model.PageProduct.PageCount; i++)
         {
             <a href="@Url.Action("Index", getRouteParams(i))"
-               class="btn btn-ghost transition-color @( Model.PageProduct.PageNumber == i ? "bg-[#f6402d] text-white hover:bg-[#f6402d]" : "hover:bg-[#fd6133] hover:text-white" )">
+               class="btn btn-ghost transition-color @( Model.PageProduct.PageNumber == i ? "bg-[#f6402d] text-white hover:bg-[#f6402d]" : "hover-bg-[#fd6133] hover-text-white" )">
                 @i
             </a>
         }
 
         <a href="@Url.Action("Index", getRouteParams(Model.PageProduct.PageNumber + 1))"
-           class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageProduct.PageNumber + 1 > Model.PageProduct.PageCount ? "btn-disabled" : "")">
+           class="btn btn-ghost hover-bg-[#fd6133] hover-text-white transition-color @( Model.PageProduct.PageNumber + 1 > Model.PageProduct.PageCount ? "btn-disabled" : "")">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
             </svg>
         </a>
         <a href="@Url.Action("Index", getRouteParams(Model.PageProduct.PageCount))"
-           class="btn btn-ghost hover:bg-[#fd6133] hover:text-white transition-color @( Model.PageProduct.PageNumber + 2 > Model.PageProduct.PageCount ? "btn-disabled" : "")">
+           class="btn btn-ghost hover-bg-[#fd6133] hover-text-white transition-color @( Model.PageProduct.PageNumber + 2 > Model.PageProduct.PageCount ? "btn-disabled" : "")">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z" />
                 <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z" />
