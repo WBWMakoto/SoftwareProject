@@ -14,4 +14,4 @@ MIT License.
 - Please senpai, notice me and give credit if you plan to use it somewhere else.
 - Read more in [LICENSE](./LICENSE) for all the sugoi details.
 
-<img src="https://images7.alphacoders.com/131/1315998.jpeg">
+
