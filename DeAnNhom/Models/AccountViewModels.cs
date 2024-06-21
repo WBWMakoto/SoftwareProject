@@ -51,7 +51,7 @@ namespace DeAnNhom.Models
 
     public class LoginViewModel
     {
-        // TODO: Hỗ trợ đăng nhập bằng số dt và tên tài khoảng
+        
         [Required]
         [Display(Name = "Email")]
         [EmailAddress]

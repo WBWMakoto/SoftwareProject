@@ -1,3 +1,5 @@
+This can apply to voucher when you can change title, image, description,...
+
 -- Look at examples for multiple size and description underline logic (search SET IDENTITY_INSERT [dbo].[Product] ON in SQL file)
 
 -- Image store logic, need careful with the sync process
