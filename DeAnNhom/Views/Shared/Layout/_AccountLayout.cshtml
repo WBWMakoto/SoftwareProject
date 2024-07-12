@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Shoppy - @ViewBag.Title</title>
+    <title>Rakuto - @ViewBag.Title</title>
 
     <script src="https://kit.fontawesome.com/34bc6c9717.js" crossorigin="anonymous"></script>
     @Styles.Render("~/Content/css/base.css")
@@ -12,7 +12,7 @@
     <header class="h-20 flex-[0_1_auto] bg-white">
         <nav class="m-auto flex h-full max-w-screen-xl items-center justify-between py-2 px-1 text-[#ee4d2d]">
             <div class="flex h-full items-center gap-5">
-                <a class="text-3xl font-medium" href="/">Shoppy</a>
+                <a class="text-3xl font-medium" href="/">Rakuto</a>
                 <span class="text-xl font-medium text-black">@ViewBag.Title</span>
             </div>
             <div>
@@ -21,16 +21,9 @@
         </nav>
     </header>
 
-    <main class="flex-[1_1_auto] bg-[#ee4d2d]" style="display: flex; ">
+    <main class="flex-[1_1_auto]" style="display: flex; background: none;">
         <section class="m-auto flex max-w-screen-lg items-center justify-end"
-                 style="
-                    background-image: url('https://cf.shopee.vn/file/5569eb9dc7e09e2dbed5315b8f2ea8ba');
-                    background-size: cover;
-                    background-repeat: no-repeat;
-                    background-position: center center;
-                    width: 100%;
-                    min-height: 600px;
-                ">
+                 style="background-image: url('https://cdn.discordapp.com/attachments/855853924580851753/1261125307922911302/b26a5286-361f-43df-a5ea-8e6edb594b5a.jpg?ex=6691d1f7&is=66908077&hm=c66038074d70807cb477935add5b35095832ea6f7036a97892bd38355b925d62&'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100%; height: 100%;">
             @RenderBody()
         </section>
     </main>
