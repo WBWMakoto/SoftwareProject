@@ -4237,6 +4237,27 @@ html {
     --tw-gradient-to: #fe6333;
 }
 
+.from-\[\#ADD8E6\] { /* Xanh dương nhạt */
+  --tw-gradient-from: #ADD8E6;
+  --tw-gradient-to: rgb(173 216 230 / 0); 
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-\[\#87CEEB\] { /* Xanh da trời nhạt */
+  --tw-gradient-to: #87CEEB;
+}
+
+.from-\[\#3f87f6\] {
+  --tw-gradient-from: #3f87f6;
+  --tw-gradient-to: rgb(63 135 246 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-\[\#33a9fe\] {
+  --tw-gradient-to: #33a9fe;
+}
+
+
 .fill-red-600 {
     fill: #dc2626;
 }

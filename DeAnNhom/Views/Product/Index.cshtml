@@ -109,7 +109,7 @@
             @foreach (var item in Model.ListProduct.OrderByDescending(p => p.CreatedAt).Take(6))
             {
                 <div class="w-48 rounded-lg bg-white shadow-lg h-[284px] overflow-hidden hover:scale-105 transition-transform duration-300">
-                    <a class "h-full" href="@Url.Action("Details", "Product", new { name = item.ProductID })">
+                    <a class="h-full" href="@Url.Action("Details", "Product", new { name = item.ProductID })">
                         <img src="@Url.Content(item.ProductImage)" class="w-[192px] h-[192px]" loading="lazy" />
                         <div class="flex flex-col justify-between h-[92px] gap-2 p-2">
                             <div class="h-max overflow-hidden text-sm"

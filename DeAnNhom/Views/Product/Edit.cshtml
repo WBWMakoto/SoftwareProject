@@ -1,78 +1,69 @@
 ﻿@model DeAnNhom.Models.Product
-
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit Product";
     Layout = "~/Views/Shared/Layout/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
+<h2 class="text-2xl font-semibold mb-4">Edit Product</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Product", FormMethod.Post, new { enctype = "multipart/form-data" })) // Allow file uploads
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Product</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="bg-white rounded-lg shadow p-6">
+        @Html.ValidationSummary(true, "", new { @class = "text-red-500 mb-2" })
         @Html.HiddenFor(model => model.ProductID)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
-            </div>
+        <div class="mb-4">
+            @Html.LabelFor(model => model.ProductName, new { @class = "block text-gray-700 font-bold mb-2" })
+            @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" } })
+            @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-red-500 text-sm" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Decription, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Decription, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Decription, "", new { @class = "text-danger" })
-            </div>
+        <div class="mb-4">
+            @Html.LabelFor(model => model.Decription, new { @class = "block text-gray-700 font-bold mb-2" })
+            @Html.TextAreaFor(model => model.Decription, new { @class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" })
+            @Html.ValidationMessageFor(model => model.Decription, "", new { @class = "text-red-500 text-sm" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
-            </div>
+        <div class="mb-4">
+            @Html.LabelFor(model => model.Price, new { @class = "block text-gray-700 font-bold mb-2" })
+            @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" } })
+            @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-red-500 text-sm" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
-            </div>
+        <div class="mb-4">
+            @Html.LabelFor(model => model.Quantity, new { @class = "block text-gray-700 font-bold mb-2" })
+            @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" } })
+            @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-red-500 text-sm" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProductImage, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProductImage, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProductImage, "", new { @class = "text-danger" })
-            </div>
+        <div class="mb-4">
+            @Html.LabelFor(model => model.Sizes, new { @class = "block text-gray-700 font-bold mb-2" })
+            @Html.EditorFor(model => model.Sizes, new { htmlAttributes = new { @class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" } })
+            @Html.ValidationMessageFor(model => model.Sizes, "", new { @class = "text-red-500 text-sm" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Category, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
-            </div>
+        <div class="mb-4">
+            @Html.LabelFor(model => model.ProductImage, new { @class = "block text-gray-700 font-bold mb-2" })
+            <input type="file" name="ImageFile" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+            @Html.ValidationMessageFor(model => model.ProductImage, "", new { @class = "text-red-500 text-sm" })
         </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+        <div class="mb-4">
+            @Html.LabelFor(model => model.Category, new { @class = "block text-gray-700 font-bold mb-2" })
+            @Html.EditorFor(model => model.Category, new { htmlAttributes = new { @class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" } })
+            @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-red-500 text-sm" })
+        </div>
+
+        <div class="flex justify-start">
+            <button type="submit" class="btn btn-default">
+                Save
+            </button>
+            <div class="mt-4">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>

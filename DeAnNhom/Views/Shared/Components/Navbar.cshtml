@@ -5,23 +5,21 @@
 @{
     var currentUser = new ApplicationUser();
     bool isSeller = false;
+    bool isAdmin = false; // Initialize isAdmin
 
     if (Request.IsAuthenticated)
     {
         var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
         var roleManager = HttpContext.Current.GetOwinContext().Get<ApplicationRoleManager>();
-
         currentUser = userManager.FindById(User.Identity.GetUserId());
         var rolesForUser = userManager.GetRoles(currentUser.Id);
 
-        if (rolesForUser.Contains(roleManager.FindByName("Seller").Name))
-        {
-            isSeller = true;
-        }
+        isSeller = rolesForUser.Contains(roleManager.FindByName("Seller").Name);
+        isAdmin = rolesForUser.Contains(roleManager.FindByName("Admin").Name);
     }
 }
 
-<header class="fixed z-50 h-28 w-screen bg-gradient-to-b from-[#f63f2d] to-[#fe6333] text-white">
+<header class="fixed z-50 h-28 w-screen bg-gradient-to-b from-[#ADD8E6] to-[#87CEEB] text-white">
     <div class="m-auto flex h-full max-w-screen-xl flex-col py-2 px-1">
         <nav id="top-nav" class="flex justify-between text-sm">
             <div id="top-left">
@@ -29,11 +27,11 @@
                     <li>
                         @if (Request.IsAuthenticated && isSeller)
                         {
-                        <a href="@Url.Action("Manage", "Product")" class="hover:text-[#fbc797]"> Kênh Người Bán </a>
+                            <a href="@Url.Action("Manage", "Product")" class="hover:text-[#fbc797]"> Kênh Người Bán Voucher </a>
                         }
                         else
                         {
-                        <a href="@Url.Action("BecomeSeller", "Account")" class="hover:text-[#fbc797]"> Trở thành Người bán Shoppy </a>
+                            <a href="@Url.Action("BecomeSeller", "Account")" class="hover:text-[#fbc797]"> Trở thành Người bán Voucher </a>
                         }
                     </li>
                     <li class="border-l-2 border-gray-300/60 pl-2">
@@ -46,6 +44,27 @@
                             <i class="fa-brands fa-instagram"></i>
                         </span>
                     </li>
+
+
+
+
+
+
+
+
+                    @* New Admin Link *@
+                    @if (Request.IsAuthenticated && isAdmin)
+                    {
+                        <li class="border-l-2 border-gray-300/60 pl-2">
+                            <a href="@Url.Action("CreateCategory", "Admin")" class="hover:text-[#fbc797]">Tạo Danh Mục</a>
+                        </li>
+                    }
+
+
+
+
+
+
                 </ul>
             </div>
             <div id="top-right">
@@ -72,43 +91,43 @@
 
                     @if (Request.IsAuthenticated)
                     {
-                    <li>
-                        @using (Html.BeginForm("Logoff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "flex gap-2 items-center" }))
+                        <li>
+                            @using (Html.BeginForm("Logoff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "flex gap-2 items-center" }))
                             {
-                        @Html.AntiForgeryToken()
-                        <a href="@Url.Action("Profile", "Account")" title="Manage" class="flex items-center justify-center gap-1">
-                            <img class="w-6 h-6 rounded-full" src="@Url.Content(currentUser.ProfileImg)" loading="lazy" />
-                            <span class="text-md"> @currentUser.Customer.Name </span>
-                        </a>
-                        <a class="border-l-[1px] border-gray-300/60 pl-2"
-                           href="javascript:document.getElementById('logoutForm').submit()">
-                            Đăng Xuất
-                        </a>
+                                @Html.AntiForgeryToken()
+                                <a href="@Url.Action("Profile", "Account")" title="Manage" class="flex items-center justify-center gap-1">
+                                    <img class="w-6 h-6 rounded-full" src="@Url.Content(currentUser.ProfileImg)" loading="lazy" />
+                                    <span class="text-md"> @currentUser.Customer.Name </span>
+                                </a>
+                                <a class="border-l-[1px] border-gray-300/60 pl-2"
+                                   href="javascript:document.getElementById('logoutForm').submit()">
+                                    Đăng Xuất
+                                </a>
                             }
-                    </li>
+                        </li>
                     }
                     else
                     {
-                    <li>
-                        <div class="flex gap-2">
-                            @Html.ActionLink("Đăng Ký", "Register", "Account")
-                            @Html.ActionLink("Đăng Nhập", "Login", "Account", null, new { @class = "border-l-[1px] border-gray-300/60 pl-2" })
-                        </div>
-                    </li>
+                        <li>
+                            <div class="flex gap-2">
+                                @Html.ActionLink("Đăng Ký", "Register", "Account")
+                                @Html.ActionLink("Đăng Nhập", "Login", "Account", null, new { @class = "border-l-[1px] border-gray-300/60 pl-2" })
+                            </div>
+                        </li>
                     }
                 </ul>
             </div>
         </nav>
         <nav id="bottom-nav" class="flex h-full gap-5">
-            <a href="/" class="flex h-full items-center justify-center text-4xl">Shoppy</a>
+            <a href="/" class="flex h-full items-center justify-center text-4xl">Rakuto</a>
             <div id="right" class="flex h-full w-full items-center justify-between">
                 <div class="w-11/12 rounded-md border-2 border-transparent p-1 focus-within:border-black">
                     @using (Html.BeginForm("Index", "Product", FormMethod.Get, new { @class = "flex w-full gap-2 rounded-md bg-white p-1 pl-4" }))
                     {
-                    <input type="text" class="w-full text-black focus:outline-none" placeholder="Type something to search" name="name" />
-                    <button class="rounded-md bg-[#fb5533] py-1 px-5" type="submit">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+                        <input type="text" class="w-full text-black focus:outline-none" placeholder="Type something to search voucher" name="name" />
+                        <button class="rounded-md bg-[#fb5533] py-1 px-5" type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
                     }
                 </div>
 
