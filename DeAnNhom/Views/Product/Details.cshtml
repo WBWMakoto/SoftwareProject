@@ -47,57 +47,68 @@
             @Html.AntiForgeryToken()
             @Html.TextBoxFor(m => m.ProductID, new { @class = "hidden", @Value = Model.product.ProductID })
 
-            <div class="flex flex-col gap-5 w-full h-full text-xl">
-                <h3 class="w-full h-max py-2 px-3 rounded-md overflow-hidden text-4xl font-bold"
-                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">
-                    @Html.DisplayFor(m => m.product.ProductName)
-                </h3>
-            
+    <div class="flex flex-col gap-5 w-full h-full text-xl">
+        <h3 class="w-full h-max py-2 px-3 rounded-md overflow-hidden text-4xl font-bold"
+            style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">
+            @Html.DisplayFor(m => m.product.ProductName)
+        </h3>
 
-                <span class="relative text-[#f7442e] bg-[#fafafa] px-5">
-                    <span class="text-4xl">
-                        @Model.product.Price.ToString("C0", CultureInfo.CreateSpecificCulture("VN-vn"))
-                    </span>
+
+        <span class="relative text-[#f7442e] bg-[#fafafa] px-5">
+            <span class="text-4xl">
+                @Model.product.Price.ToString("C0", CultureInfo.CreateSpecificCulture("VN-vn"))
+            </span>
+        </span>
+
+        @if (Model.product.Category != null)
+        {
+            <a href="@Url.Action("Index", "Product", new { category = Model.product.Category.CategoryName })"
+               class="px-5 text-gray-500 min-h-[100px] flex mb-4">
+                Category⠀⠀
+                <span class="px-2 py-1 rounded-md border border-gray-300">
+                    @Model.product.Category.CategoryName
                 </span>
+            </a>
+        }
 
-                <div class="px-5 text-gray-500 min-h-[100px] flex">
-                    <span class="w-[250px] block">
-                        Cheaper than original price
-                    </span>
-                    <div class="flex gap-2 h-8">
-                        @Html.EditorFor(m => m.Size, new { htmlAttributes = new { @class = "hidden", @Value = sizes.First() } })
-                        @foreach (string size in sizes)
-                        {
-                            <button class="w-[100px] h-max border-2 rounded-md @(sizes.First() == size ? "border-[#f05d40] text-[#f05d40]": "border-gray-300") px-2 py-1 text-center sizeBtn" type="button">
-                                @size
-                            </button>
-                        }
-                    </div>
-                </div>
-
-                <div class="px-5 text-gray-500 min-h-[50px] flex">
-                    <span class="w-[120px] block">
-                        Số lượng
-                    </span>
-                    <div class="flex gap-2 h-8">
-                        <div class="border border-gray-300 flex items-center justify-center">
-                            <button onclick="decreaseAmount()" type="button" class="text-center w-8 h-8 border-r-[1px] border-gray-300"> <i class="fa-solid fa-minus"></i> </button>
-                            <input class="w-[60px] h-8 border border-gray-300 focus:outline-none text-center" name="Quantity" id="Quantity" value="1" />
-                            <button onclick="increaseAmount()" type="button" class="text-center w-8 h-8 border-l-[1px] border-gray-300"> <i class="fa-solid fa-plus"></i> </button>
-                        </div>
-                        <span class="h-8 text-sm flex items-center"> @Html.DisplayFor(m => m.product.Quantity) có sẵn </span>
-                    </div>
-                </div>
-
-                <div class="text-lg" id="btnGroup">
-                    <button class="bg-[#ffeee8] hover:bg[#fff5f1] text-[#f05d40] py-2 px-4 rounded-md border-2 border-[#f05d40] disabled:cursor-not-allowed disabled:border-transparent" disabled=@UserIsSeller type="button" onclick="addToCart()">
-                        <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ hàng
+        <div class="px-5 text-gray-500 min-h-[100px] flex">
+            <span class="w-[250px] block">
+                Cheaper than original price
+            </span>
+            <div class="flex gap-2 h-8">
+                @Html.EditorFor(m => m.Size, new { htmlAttributes = new { @class = "hidden", @Value = sizes.First() } })
+                @foreach (string size in sizes)
+                {
+                    <button class="w-[100px] h-max border-2 rounded-md @(sizes.First() == size ? "border-[#f05d40] text-[#f05d40]": "border-gray-300") px-2 py-1 text-center sizeBtn" type="button">
+                        @size
                     </button>
-                    <button class="bg-[#f05d40] text-white py-2 px-4 rounded-md disabled:bg-[#f4836c] disabled:cursor-not-allowed" disabled=@UserIsSeller type="submit">
-                        Mua ngay
-                    </button>
-                </div>
+                }
             </div>
+        </div>
+
+        <div class="px-5 text-gray-500 min-h-[50px] flex">
+            <span class="w-[120px] block">
+                Số lượng
+            </span>
+            <div class="flex gap-2 h-8">
+                <div class="border border-gray-300 flex items-center justify-center">
+                    <button onclick="decreaseAmount()" type="button" class="text-center w-8 h-8 border-r-[1px] border-gray-300"> <i class="fa-solid fa-minus"></i> </button>
+                    <input class="w-[60px] h-8 border border-gray-300 focus:outline-none text-center" name="Quantity" id="Quantity" value="1" />
+                    <button onclick="increaseAmount()" type="button" class="text-center w-8 h-8 border-l-[1px] border-gray-300"> <i class="fa-solid fa-plus"></i> </button>
+                </div>
+                <span class="h-8 text-sm flex items-center"> @Html.DisplayFor(m => m.product.Quantity) có sẵn </span>
+            </div>
+        </div>
+
+        <div class="text-lg" id="btnGroup">
+            <button class="bg-[#ffeee8] hover:bg[#fff5f1] text-[#f05d40] py-2 px-4 rounded-md border-2 border-[#f05d40] disabled:cursor-not-allowed disabled:border-transparent" disabled=@UserIsSeller type="button" onclick="addToCart()">
+                <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ hàng
+            </button>
+            <button class="bg-[#f05d40] text-white py-2 px-4 rounded-md disabled:bg-[#f4836c] disabled:cursor-not-allowed" disabled=@UserIsSeller type="submit">
+                Mua ngay
+            </button>
+        </div>
+    </div>
         }
     </section>
 
