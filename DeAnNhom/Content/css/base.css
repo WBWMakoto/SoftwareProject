@@ -3754,8 +3754,20 @@ html {
     width: 200px;
 }
 
+.w-\[250px\] {
+    width: 250px;
+}
+
 .w-\[100px\] {
     width: 100px;
+}
+
+.w-\[300px\] {
+    width: 300px;
+}
+
+.w-\[400px\] {
+    width: 400px;
 }
 
 .w-8 {
