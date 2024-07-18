@@ -252,7 +252,7 @@ namespace DeAnNhom.Controllers
                 }
 
                 // Update other properties (using TryUpdateModel is fine)
-                TryUpdateModel(product, new string[] { "ProductName", "Decription", "Price", "Quantity", "Sizes", "CategoryID" });
+                TryUpdateModel(product, new string[] { "ProductName", "Decription", "Price", "Quantity", "Sizes", "CategoryName" });
 
                 await db.SaveChangesAsync();
                 return RedirectToAction("Manage");
@@ -261,7 +261,7 @@ namespace DeAnNhom.Controllers
             // If ModelState is not valid, return to the edit view with errors
             return View(product);
         }
-    
+
 
         // POST: Product/Delete
         [HttpPost]
