@@ -137,7 +137,8 @@ namespace DeAnNhom.Controllers
                     // Tạo một tên file duy nhất bằng cách sử dụng thời gian và một phần ngẫu nhiên
                     string uniqueFileName = $"{DateTime.Now.Ticks}_{Guid.NewGuid()}{fileExtension}";
 
-                    model.UploadImg.SaveAs(Path.Combine(Server.MapPath("~/Content/Images/Product"), uniqueFileName));
+                    string imagePath = Path.Combine(Server.MapPath("~/Content/Images/Product"), uniqueFileName);
+                    model.UploadImg.SaveAs(imagePath);
                     p.ProductImage = $"~/Content/Images/Product/{uniqueFileName}";
                 }
 
@@ -204,29 +205,52 @@ namespace DeAnNhom.Controllers
         // POST: Product/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int name, FormCollection collection)
+        public async Task<ActionResult> Edit(int name, HttpPostedFileBase ImageFile)
         {
-            try
-            {
-                var product = db.Products.Where(p => p.ProductID == name).FirstOrDefault();
+            var product = db.Products.Find(name);
 
-                if (product == null)
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Check if a new image was uploaded
+                if (ImageFile != null && ImageFile.ContentLength > 0)
                 {
-                    return RedirectToAction("Manage", "Product");
+                    // Delete old image (if it exists and it's not the default)
+                    if (!string.IsNullOrEmpty(product.ProductImage) && !product.ProductImage.Contains("default"))
+                    {
+                        var oldImagePath = Server.MapPath(product.ProductImage);
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    // Save the new image
+                    string originalFileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    string fileExtension = Path.GetExtension(ImageFile.FileName);
+                    string uniqueFileName = $"{DateTime.Now.Ticks}_{Guid.NewGuid()}{fileExtension}";
+                    string imagePath = Path.Combine(Server.MapPath("~/Content/Images/Product"), uniqueFileName);
+                    ImageFile.SaveAs(imagePath);
+
+                    // Update the product's image path
+                    product.ProductImage = $"~/Content/Images/Product/{uniqueFileName}";
                 }
 
-                // Update the product properties based on the form collection
-                TryUpdateModel(product, collection);
+                // Update other properties (using TryUpdateModel is fine)
+                TryUpdateModel(product, new string[] { "ProductName", "Decription", "Price", "Quantity", "Sizes", "CategoryID" });
 
                 await db.SaveChangesAsync();
+                return RedirectToAction("Manage");
+            }
 
-                return RedirectToAction("Manage", "Product");
-            }
-            catch
-            {
-                return View();
-            }
+            // If ModelState is not valid, return to the edit view with errors
+            return View(product);
         }
+    
 
         // POST: Product/Delete
         [HttpPost]
