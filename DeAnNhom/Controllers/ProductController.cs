@@ -252,7 +252,7 @@ namespace DeAnNhom.Controllers
                 }
 
                 // Update other properties (using TryUpdateModel is fine)
-                TryUpdateModel(product, new string[] { "ProductName", "Decription", "Price", "Quantity", "Sizes", "CategoryName" });
+                TryUpdateModel(product, new string[] { "ProductName", "Decription", "Price", "Quantity", "Sizes", "CategoryName", "CategoryID" });
 
                 await db.SaveChangesAsync();
                 return RedirectToAction("Manage");
