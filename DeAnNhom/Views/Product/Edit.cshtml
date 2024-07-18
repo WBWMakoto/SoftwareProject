@@ -39,7 +39,7 @@
         </div>
 
         <div class="mb-4">
-            @Html.LabelFor(model => model.Sizes, new { @class = "block text-gray-700 font-bold mb-2" })
+            @Html.Label("Cheaper than original price", new { @class = "block text-gray-700 font-bold mb-2" })
             @Html.EditorFor(model => model.Sizes, new { htmlAttributes = new { @class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" } })
             @Html.ValidationMessageFor(model => model.Sizes, "", new { @class = "text-red-500 text-sm" })
         </div>
