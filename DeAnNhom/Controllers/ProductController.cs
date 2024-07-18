@@ -144,12 +144,6 @@ namespace DeAnNhom.Controllers
 
                 await db.SaveChangesAsync();
 
-
-
-
-
-
-
                 return RedirectToAction("Details", new { name = p.ProductID });
             }
             catch
@@ -210,13 +204,23 @@ namespace DeAnNhom.Controllers
         // POST: Product/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int name, FormCollection collection)
+        public async Task<ActionResult> Edit(int name, FormCollection collection)
         {
             try
             {
-                // TODO: Add update logic here
+                var product = db.Products.Where(p => p.ProductID == name).FirstOrDefault();
 
-                return RedirectToAction("Index");
+                if (product == null)
+                {
+                    return RedirectToAction("Manage", "Product");
+                }
+
+                // Update the product properties based on the form collection
+                TryUpdateModel(product, collection);
+
+                await db.SaveChangesAsync();
+
+                return RedirectToAction("Manage", "Product");
             }
             catch
             {
