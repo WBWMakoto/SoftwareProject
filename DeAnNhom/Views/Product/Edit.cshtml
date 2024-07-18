@@ -44,7 +44,27 @@
             @Html.ValidationMessageFor(model => model.Sizes, "", new { @class = "text-red-500 text-sm" })
         </div>
 
-    
+        <div class="mb-4">
+            @Html.LabelFor(model => model.Category, new { @class = "block text-gray-700 font-bold mb-2" })
+
+            @if (ViewBag.Categories != null)
+            {
+                var selectedCategory = Model.Category != null ? Model.Category.ToString() : "";
+                foreach (var category in ViewBag.Categories as SelectList)
+                {
+                    <div class="flex items-center">
+                        <input type="radio" id="@category.Value" name="Category" value="@category.Value" class="mr-2" @(selectedCategory == category.Value ? "checked" : "") />
+                        <label for="@category.Value" class="text-gray-700">@category.Text</label>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-red-500 text-sm">No categories available.</p>
+            }
+
+            @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-red-500 text-sm" })
+        </div>
 
         <div class="mb-4">
             @Html.LabelFor(model => model.ProductImage, new { @class = "block text-gray-700 font-bold mb-2" })

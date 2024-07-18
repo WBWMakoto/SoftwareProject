@@ -192,6 +192,17 @@ namespace DeAnNhom.Controllers
 
         public ActionResult Edit(int name)
         {
+            // Retrieve categories from the database
+            var categories = db.Categories.ToList();
+
+            // Create a SelectList from the categories
+            var categoryList = new SelectList(categories, "CategoryID", "CategoryName");
+
+            // Assign the SelectList to ViewBag.Categories
+            ViewBag.Categories = categoryList;
+
+            // Other code...
+
             var product = db.Products.Where(p => p.ProductID == name).FirstOrDefault();
 
             if (product == null)
