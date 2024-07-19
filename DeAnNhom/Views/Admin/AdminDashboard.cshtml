@@ -3,14 +3,19 @@
     Layout = "~/Views/Shared/Layout/_Layout.cshtml";
 }
 
-<h2>AdminDashboard</h2>
+<section class="container mx-auto mt-8">
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <h2 class="text-2xl font-semibold mb-4">Quick access admin function pages</h2>
 
-
-<div>
-    <h3>Access Admin Pages</h3>
-    <ul>
-        <li><a href="@Url.Action("CreateCategory", "Admin")">Create Category</a></li>
-        <li><a href="@Url.Action("DeleteCategory", "Admin")">Manage Products</a></li>
-        <!-- Add more admin pages here -->
-    </ul>
-</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-100 rounded-lg p-6">
+                <h3 class="text-xl font-medium mb-2">Quản Lý Danh Mục</h3>
+                <ul class="list-disc list-inside">
+                    <li><a href="@Url.Action("CreateCategory", "Admin")" class="text-blue-500 hover:underline">Create Category</a></li>
+                    
+                    <li><a href="@Url.Action("DeleteCategory", "Admin")" class="text-blue-500 hover:underline">Delete Category</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+            </section>
