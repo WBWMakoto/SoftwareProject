@@ -184,5 +184,53 @@ namespace DeAnNhom.Controllers
             }
             return View();
         }
+
+
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult EditCategory()
+        {
+            ViewBag.Categories = db.Categories.ToList();
+            return View(new EditCategoryViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public ActionResult EditCategory(EditCategoryViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var category = db.Categories.Find(model.CategoryId);
+                if (category == null)
+                {
+                    return HttpNotFound();
+                }
+
+                if (model.CategoryImage != null && model.CategoryImage.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(model.CategoryImage.FileName);
+                    string extent = Path.GetExtension(model.CategoryImage.FileName);
+                    fileName = fileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + extent;
+
+                    string path = Path.Combine(Server.MapPath("~/Content/Images/Category"), fileName);
+                    model.CategoryImage.SaveAs(path);
+                    category.CategoryImage = $"~/Content/Images/Category/{fileName}";
+                }
+
+                if (!string.IsNullOrEmpty(model.CategoryName))
+                {
+                    category.CategoryName = model.CategoryName;
+                }
+
+                db.SaveChanges();
+                ViewBag.IsSuccess = true;
+            }
+
+            ViewBag.Categories = db.Categories.ToList();
+            return View(model);
+        }
+
+
     }
 }

@@ -71,4 +71,18 @@ namespace DeAnNhom.Models
         public HttpPostedFileBase CategoryImage { get; set; }
     }
 
+    // Thêm EditCategoryViewModel
+    public class EditCategoryViewModel
+    {
+        [Required(ErrorMessage = "Thiếu danh mục")]
+        [Display(Name = "Danh mục")]
+        public string CategoryId { get; set; }  // Changed from int to string
+
+        [Display(Name = "Tên danh mục")]
+        public string CategoryName { get; set; }
+
+        [Display(Name = "Ảnh danh mục")]
+        public HttpPostedFileBase CategoryImage { get; set; }
+    }
+
 }
