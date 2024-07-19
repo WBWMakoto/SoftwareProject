@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "AdminDashboard";
+    Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+}
+
+<h2>AdminDashboard</h2>
+
+
+<div>
+    <h3>Access Admin Pages</h3>
+    <ul>
+        <li><a href="@Url.Action("CreateCategory", "Admin")">Create Category</a></li>
+        <li><a href="@Url.Action("DeleteCategory", "Admin")">Manage Products</a></li>
+        <!-- Add more admin pages here -->
+    </ul>
+</div>

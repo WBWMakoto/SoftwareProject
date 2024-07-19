@@ -1,41 +1,44 @@
-﻿@model DeAnNhom.Models.Category
+﻿@using DeAnNhom.Models;
+@model DeAnNhom.Models.Category
 
 @{
-    ViewBag.Title = "DeleteCategory";
+    ViewBag.Title = "Delete Category";
     Layout = "~/Views/Shared/Layout/_Layout.cshtml";
+
+    // Get the list of categories from your controller action
+    var categories = ViewBag.Categories as List<Category>;
 }
 
-<h2>DeleteCategory</h2>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Category</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CategoryName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CategoryName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CategoryImage)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CategoryImage)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+<section class="max-w-screen-xl w-max text-black m-auto pt-5 flex flex-none gap-5">
+    <div class="w-full flex-none bg-white shadow-lg rounded-md py-5 px-6">
+        <div id="top-head" class="py-5 px-6 w-full text-center">
+            <h4 class="text-4xl font-semibold">Delete Category</h4>
         </div>
-    }
-</div>
+
+        @using (Html.BeginForm("DeleteCategory", "Admin", FormMethod.Get))
+        {
+            <div class="flex flex-col items-center gap-5">
+                <label for="CategoryId" class="text-xl">Select Category:</label>
+                @Html.DropDownList("CategoryId", new SelectList(ViewBag.Categories, "Id", "CategoryName"), "Select a category", new { @class = "border border-gray-500/60 px-4 py-2 rounded-lg focus:outline-none focus:border-[#f6412d]" })
+                <button type="submit" class="bg-blue-500 text-black py-3 px-4 rounded-md">Delete Category</button>
+            </div>
+        }
+
+        @if (Model != null)
+        {
+            <div class="flex flex-col items-center gap-5">
+                <img src="@Url.Content(Model.CategoryImage)" alt="@Model.CategoryName" class="w-[150px] h-[150px] object-contain rounded-md" />
+                <p class="text-xl">Are you sure you want to delete this category?</p>
+
+                @using (Html.BeginForm("DeleteCategoryConfirmed", "Admin", new { id = Model.Id }, FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="flex gap-2">
+                        <button type="submit" class="bg-red-500 text-white py-3 px-4 rounded-md">Delete</button>
+                        @Html.ActionLink("Cancel", "Categories", "Admin", null, new { @class = "bg-gray-400 text-white py-3 px-4 rounded-md" })
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

@@ -5,10 +5,15 @@ using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+
+using System.Data.Entity; // Add this for Include()
+
 
 
 namespace DeAnNhom.Controllers
@@ -75,29 +80,6 @@ namespace DeAnNhom.Controllers
                 return HttpContext.GetOwinContext().Authentication;
             }
         }
-        /*WTF logic here Need customer with these condition to become Admin (but it is broken LOL)
-         * 
-         * LOCK ALL OLD ERROR LOGICS
-         * 
-        [Authorize(Roles = "Customer")]
-        public async Task<ActionResult> BecomeAdmin()
-        {
-            var user = UserManager.FindById(User.Identity.GetUserId());
-
-            if (user.Email.ToLower() == "admin6969@gmail.com" || user.Email.ToLower() == "admin@admin.com")
-            {
-                db.Sellers.Add(new Seller { SellerID = user.Id, ShopName = user.Customer.Name });
-
-                await Task.WhenAll(
-                    UserManager.AddToRolesAsync(user.Id, "Admin", "Seller"),
-                    db.SaveChangesAsync()
-                );
-
-                return RedirectToAction("Profile", "Account");
-            }
-            return RedirectToAction("Unauthorization", "Errors");
-        }
-        */
 
         [Authorize(Roles = "Customer")]
         public async Task<ActionResult> BecomeAdmin()
@@ -118,23 +100,60 @@ namespace DeAnNhom.Controllers
             return RedirectToAction("Unauthorization", "Errors");
         }
 
+        [Authorize(Roles = "Admin")]
+        public ActionResult DeleteCategory(int? CategoryId)
+        {
+            try
+            {
+                ViewBag.Categories = db.Categories.ToList();
 
+                if (CategoryId.HasValue)
+                {
+                    var category = db.Categories.Find(CategoryId);
+                    if (category == null)
+                    {
+                        return HttpNotFound();
+                    }
+                    return View(category);
+                }
+                else
+                {
+                    return View(); // Return the view to select a category
+                }
+            }
+            catch (Exception)
+            {
+                // Log the error
+                return View("Error");
+            }
 
-        /*BackUP accounts 
-         1. Admin account
-         Email: adminmakoto@gmail.com
-         Password: Letbringg1oryto@nime
+        }
 
-         2. Test account
-         Email: beater@gmail.com (it actually Kirio nickname named by low-level playerbase LOL)
-         Password: No1canbe@tKirito
-        */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteCategoryConfirmed(int id)
+        {
+            var category = db.Categories.Find(id);
+            if (category == null)
+            {
+                return HttpNotFound();
+            }
+
+            db.Categories.Remove(category);
+            db.SaveChanges();
+
+            return RedirectToAction("Categories");
+        }
+
         [Authorize(Roles = "Admin")]
         public ActionResult CreateCategory()
         {
+            return View();
+        }
 
-       
-
+        [Authorize(Roles = "Admin")]
+        public ActionResult AdminDashboard()
+        {
             return View();
         }
 

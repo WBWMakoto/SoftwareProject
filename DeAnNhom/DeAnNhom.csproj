@@ -313,6 +313,7 @@
     <Content Include="Views\Home\Categories.cshtml" />
     <Content Include="Views\Account\Update.cshtml" />
     <Content Include="Views\Admin\DeleteCategory.cshtml" />
+    <Content Include="Views\Admin\AdminDashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
