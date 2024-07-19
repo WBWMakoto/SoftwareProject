@@ -101,37 +101,29 @@ namespace DeAnNhom.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult DeleteCategory(int? CategoryId)
+        public ActionResult DeleteCategory(string CategoryId)
         {
-            try
-            {
-                ViewBag.Categories = db.Categories.ToList();
+            ViewBag.Categories = db.Categories.ToList();
 
-                if (CategoryId.HasValue)
-                {
-                    var category = db.Categories.Find(CategoryId);
-                    if (category == null)
-                    {
-                        return HttpNotFound();
-                    }
-                    return View(category);
-                }
-                else
-                {
-                    return View(); // Return the view to select a category
-                }
-            }
-            catch (Exception)
+            if (!string.IsNullOrEmpty(CategoryId))
             {
-                // Log the error
-                return View("Error");
+                var category = db.Categories.Find(CategoryId);
+                if (category == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(category);
             }
-
+            else
+            {
+                return View();
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteCategoryConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public ActionResult DeleteCategoryConfirmed(string id)
         {
             var category = db.Categories.Find(id);
             if (category == null)
@@ -142,7 +134,7 @@ namespace DeAnNhom.Controllers
             db.Categories.Remove(category);
             db.SaveChanges();
 
-            return RedirectToAction("Categories");
+            return RedirectToAction("DeleteCategory");
         }
 
         [Authorize(Roles = "Admin")]
