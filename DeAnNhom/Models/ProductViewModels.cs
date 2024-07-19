@@ -70,4 +70,5 @@ namespace DeAnNhom.Models
         [Required(ErrorMessage = "Thiếu ảnh danh mục")]
         public HttpPostedFileBase CategoryImage { get; set; }
     }
+
 }

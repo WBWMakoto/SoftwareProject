@@ -16,6 +16,13 @@ namespace DeAnNhom
             );
 
             routes.MapRoute(
+              name: "Admin",
+              url: "Admin/{action}/{name}",
+              defaults: new { controller = "Admin", action = "Index", name = UrlParameter.Optional }
+          );
+
+
+            routes.MapRoute(
                 name: "Account",
                 url: "Account/{action}/{name}",
                 defaults: new { controller = "Account", action = "Index", name = UrlParameter.Optional }
