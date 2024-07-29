@@ -133,6 +133,7 @@ namespace DeAnNhom.Controllers
 
             db.Categories.Remove(category);
             db.SaveChanges();
+            ViewBag.IsSuccess = true;
 
             return RedirectToAction("DeleteCategory");
         }

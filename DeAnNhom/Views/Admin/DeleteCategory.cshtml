@@ -25,12 +25,19 @@
                 @using (Html.BeginForm("DeleteCategoryConfirmed", "Admin", new { id = Model.CategoryID }, FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
-                    <div class="flex gap-2">
-                        <button type="submit" class="bg-red-500 text-black py-3 px-4 rounded-md">Delete</button>
-                        @Html.ActionLink("Cancel", "DeleteCategory", "Admin", null, new { @class = "bg-gray-400 text-black py-3 px-4 rounded-md" })
-                    </div>
-                }
+            <div class="flex gap-2">
+                <button type="submit" class="bg-red-500 text-black py-3 px-4 rounded-md">Delete</button>
+                @Html.ActionLink("Cancel", "DeleteCategory", "Admin", null, new { @class = "bg-gray-400 text-black py-3 px-4 rounded-md" })
+               
             </div>
+                }
+
+
+            </div>
+
         }
+
+
     </div>
+   
 </section>
