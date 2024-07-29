@@ -51,25 +51,22 @@
                     <span class="flex items-center justify-center">
                         @FormatPrice(item._product.Price)
                     </span>
-                    @using (Html.BeginForm("UpdateItemQuantity", "Cart", FormMethod.Post, new
-                    {
-                        @class = "col-span-2 min-h-[50px] flex justify-between items-center",
-                        enctype = "multipart/form-data"
-                    }))
+                    @using (Html.BeginForm("UpdateItemQuantity", "Cart", FormMethod.Post, new { @class = "col-span-2 min-h-[50px] flex justify-between items-center" }))
                     {
                         @Html.AntiForgeryToken()
                         <input name="ProID" id="ProID" value="@item._product.ProductID" class="hidden" />
                         <input name="Size" id="Size" value="@item._sizes" class="hidden" />
 
                         <div class="border border-gray-300 flex items-center justify-center">
-                            <button onclick="decreaseQuantity(@item._product.Quantity, '@item._sizes')" type="button" class="text-center w-8 h-8 border-r-[1px] border-gray-300"> <i class="fa-solid fa-minus"></i> </button>
-                            <input class="w-[60px] h-8 focus:outline-none text-center inputQuantity" value="@item._quantity" id="@formatID(item._product.Quantity, item._sizes)" name="Quantity" data-maxQuan="@item._product.Quantity" />
-                            <button onclick="increaseQuantity(@item._product.Quantity, '@item._sizes')" type="button" class="text-center w-8 h-8 border-l-[1px] border-gray-300"> <i class="fa-solid fa-plus"></i> </button>
+                            <button onclick="decreaseQuantity(@item._product.ProductID, '@item._sizes')" type="button" class="text-center w-8 h-8 border-r-[1px] border-gray-300"> <i class="fa-solid fa-minus"></i> </button>
+                            <input class="w-[60px] h-8 focus:outline-none text-center inputQuantity" value="@item._quantity" id="Quantity-@item._product.ProductID-@item._sizes" name="Quantity" data-maxQuan="@item._product.Quantity" />
+                            <button onclick="increaseQuantity(@item._product.ProductID, '@item._sizes')" type="button" class="text-center w-8 h-8 border-l-[1px] border-gray-300"> <i class="fa-solid fa-plus"></i> </button>
                         </div>
                         <button type="submit" class="bg-[#ee4d2d] text-center rounded-md px-3 py-1 text-white">
                             Tính lại số tiền
                         </button>
                     }
+
                     <span class="flex items-center justify-center text-[#ee4d2d]">
                         @FormatPrice(item._quantity * item._product.Price)
                     </span>
@@ -120,66 +117,38 @@
 @section script
 {
     <script>
-        const decreaseQuantity = (maxQuan, size) => {
-            const input = $(`#Quantity-${maxQuan}-${size}`)[0];
-            let currentQuan = (+input.value);
+        const decreaseQuantity = (proID, size) => {
+            const input = document.getElementById(`Quantity-${proID}-${size}`);
+            let currentQuan = parseInt(input.value);
 
-            if (currentQuan - 1 > 0) {
-                input.setAttribute("value", currentQuan - 1);
+            if (currentQuan > 1) {
+                input.value = currentQuan - 1;
             }
         }
 
-        const increaseQuantity = (maxQuan, size) => {
-            const input = $(`#Quantity-${maxQuan}-${size}`)[0];
-            let currentQuan = (+input.value);
+        const increaseQuantity = (proID, size) => {
+            const input = document.getElementById(`Quantity-${proID}-${size}`);
+            let currentQuan = parseInt(input.value);
+            const maxQuan = parseInt(input.getAttribute("data-maxQuan"));
 
-            if (currentQuan + 1 <= (+maxQuan)) {
-                input.setAttribute("value", currentQuan + 1);
+            if (currentQuan < maxQuan) {
+                input.value = currentQuan + 1;
             }
         }
 
-        const checkout = async () => await fetch("/Cart/Checkout", { method: "POST" });
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("input.inputQuantity").forEach(function (input) {
+                const maxQuan = parseInt(input.getAttribute("data-maxQuan"));
 
-        (function ($) {
-            $.fn.inputFilter = function (callback) {
-                return this.on("input keydown keyup mousedown mouseup select contextmenu drop focusout", function (e) {
-                    if (callback(this.value)) {
-                        // Accepted value
-                        if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
-                            $(this).removeClass("input-error");
-                            this.setCustomValidity("");
-                        }
-                        this.oldValue = this.value;
-                        this.oldSelectionStart = this.selectionStart;
-                        this.oldSelectionEnd = this.selectionEnd;
-                    }
-                    else if (this.hasOwnProperty("oldValue")) {
-                        // Rejected value - restore the previous one
-                        $(this).addClass("input-error");
-                        this.reportValidity();
-                        this.value = this.oldValue;
-                        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
-                    }
-                    else {
-                        // Rejected value - nothing to restore
-                        this.value = "";
+                input.addEventListener("input", function () {
+                    if (input.value < 1 || input.value > maxQuan) {
+                        input.setCustomValidity("Invalid quantity");
+                        input.reportValidity();
+                    } else {
+                        input.setCustomValidity("");
                     }
                 });
-            };
-        }(jQuery));
-
-        $(document).ready(function () {
-            const inputs = $("input.inputQuantity");
-
-            for (let i = 0; i < inputs.length; i++) {
-                const input = inputs[i];
-                const maxQuan = +input.getAttribute("data-maxQuan");
-                const inputID = input.getAttribute("id");
-
-                $("#" + inputID).inputFilter(function (value) {
-                    return /^\d*$/.test(value) && value != 0 && value <= maxQuan;   // Allow digits only, using a RegExp
-                });
-            }
+            });
         });
     </script>
 }

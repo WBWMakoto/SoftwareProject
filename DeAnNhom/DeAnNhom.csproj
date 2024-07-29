@@ -303,7 +303,7 @@
     <Content Include="Views\Product\TotalProduct.cshtml" />
     <Content Include="Views\Home\Ads.cshtml" />
     <Content Include="Views\Cart\CheckOut.cshtml" />
-    <Content Include="Views\Cart\CheckoutFailed.cshtml" />
+    <Content Include="Views\Cart\CheckOutFailed.cshtml" />
     <Content Include="Views\Cart\CheckOutSuccess.cshtml" />
     <Content Include="Views\Product\Manage.cshtml" />
     <Content Include="Views\Admin\CreateCategory.cshtml" />
