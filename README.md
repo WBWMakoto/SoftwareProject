@@ -1,6 +1,8 @@
 # Kawaii work for serving the Software Project 🌸
 
-<img src="https://images5.alphacoders.com/131/1316292.jpeg">
+<p align="center">
+  <img src="https://images.alphacoders.com/131/thumb-1920-1311951.jpg" alt="Kawaii Banner" width="600">
+</p>
 
 ## Used Stack 🛠️
 
