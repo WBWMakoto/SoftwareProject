@@ -1,12 +1,12 @@
-This can apply to voucher when you can change title, image, description,...
+1. You should use an image link instead of a file location for big projects or a more "science" style
+2. I give you two examples below please careful with image logic when sync
 
--- Look at examples for multiple size and description underline logic (search SET IDENTITY_INSERT [dbo].[Product] ON in SQL file)
 
--- Image store logic, need careful with the sync process
--- INSERT [dbo].[Product] ([ProductID], [ProductName], [Decription], [Price], [Sizes], [Quantity], [ProductImage], [Sold], [CreatedAt], [CategoryID], [SellerID]) VALUES (24, N'86-EIGHTY SIX- Ep.7 - Tặng Kèm Phong Bì + Postcard Giấy Có Đế Dựng', N'Kiêu hãnh chiến đấu, rồi hi sinh. Số phận của Tám Sáu là vậy. Lòng ham sống đã bị họ bỏ lại ở quá khứ rất xa...', CAST(120000.00 AS Decimal(18, 2)), N'Vừa', 498, N'~/Content/Images/Product/1.jpg', 102, CAST(N'2022-05-05T00:00:00.000' AS DateTime), N'3                   ', N'eb340ea9-434e-46f2-a143-0c52dd602734')
 
-FULL ADVANCED EXAMPLE (TRY TO FOLLOW THIS METHOD)
-*NOTE FOR GROUP WORK, IMAGE SHOULD BE THE INTERNET IMAGE LINK
+INSERT [dbo].[Product] ([ProductID], [ProductName], [Decription], [Price], [Sizes], [Quantity], [ProductImage], [Sold], [CreatedAt], [CategoryID], [SellerID]) VALUES (24, N'86-EIGHTY SIX- Ep.7 - Tặng Kèm Phong Bì + Postcard Giấy Có Đế Dựng', N'Kiêu hãnh chiến đấu, rồi hi sinh. Số phận của Tám Sáu là vậy. Lòng ham sống đã bị họ bỏ lại ở quá khứ rất xa...', CAST(120000.00 AS Decimal(18, 2)), N'Vừa', 498, N'~/Content/Images/Product/1.jpg', 102, CAST(N'2022-05-05T00:00:00.000' AS DateTime), N'3                   ', N'eb340ea9-434e-46f2-a143-0c52dd602734')
+
+
+
 
 INSERT [dbo].[Product] ([ProductID], [ProductName], [Decription], [Price], [Sizes], [Quantity], [ProductImage], [Sold], [CreatedAt], [CategoryID], [SellerID]) VALUES (24, N'Samsung Galaxy S23 Ultra ', N'THÔNG TIN SẢN PHẨM:
 Samsung Galaxy S23 Ultra là chiếc smartphone cao cấp nhất của nhà Samsung, sở hữu cấu hình không tưởng với con chip khủng được Qualcomm tối ưu riêng cho dòng Galaxy và camera lên đến 200 MP, xứng danh là chiếc flagship Android được mong đợi nhất trong năm 2023.
